@@ -1,318 +1,600 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AccessToExcess — A2E Food</title>
+  <meta charset="UTF-8" />
+  <title>AccessToExcess (A2E) Demo</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { margin: 0; background: #f5f7f5; color: #123024; }
+    header {
+      background: #0f7b4f;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { margin: 0; font-size: 20px; }
+    header span { font-size: 12px; opacity: 0.9; }
+    .view-toggle button {
+      border: none;
+      padding: 8px 14px;
+      margin-left: 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      background: rgba(255,255,255,0.15);
+      color: white;
+    }
+    .view-toggle button.active {
+      background: white;
+      color: #0f7b4f;
+      font-weight: 600;
+    }
+    main { padding: 20px 24px 40px; max-width: 1100px; margin: 0 auto; }
+    h2 { margin-top: 0; color: #0f7b4f; }
 
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    /* Layout */
+    .layout-two {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .layout-two { grid-template-columns: 1fr; }
+    }
 
-<style>
-/* (KEEP YOUR ORIGINAL CSS UNCHANGED — ONLY CONTENT IS TRANSFORMED) */
-</style>
+    /* Filters */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .filters select, .filters input {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #cfd8d2;
+      font-size: 13px;
+      background: white;
+    }
+
+    /* Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid #e0e7e2;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e6f4ea;
+      color: #0f7b4f;
+    }
+    .badge.offline {
+      background: #fde4e4;
+      color: #b3261e;
+    }
+    .card-title { font-weight: 600; font-size: 14px; }
+    .card-meta { font-size: 12px; color: #5f6f64; }
+    .price { font-weight: 600; font-size: 13px; color: #0f7b4f; }
+
+    /* Map placeholder */
+    .map-box {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e0e7e2;
+      padding: 14px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .map-placeholder {
+      flex: 1;
+      border-radius: 10px;
+      border: 1px dashed #cfd8d2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #7a8a7f;
+      background: #f8faf8;
+    }
+
+    /* Admin */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 1.6fr 1.1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .admin-layout { grid-template-columns: 1fr; }
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #edf1ed;
+      text-align: left;
+    }
+    th { background: #f1f6f2; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; }
+    tr:last-child td { border-bottom: none; }
+    .admin-actions button {
+      border: none;
+      padding: 4px 8px;
+      margin-right: 4px;
+      border-radius: 999px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .btn-small {
+      background: #0f7b4f;
+      color: white;
+    }
+    .btn-ghost {
+      background: #f3f6f4;
+      color: #123024;
+    }
+    .btn-danger {
+      background: #b3261e;
+      color: white;
+    }
+
+    .admin-form {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e0e7e2;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .admin-form label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #123024;
+    }
+    .admin-form input,
+    .admin-form select,
+    .admin-form textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #cfd8d2;
+      font-size: 13px;
+      resize: vertical;
+    }
+    .admin-form textarea { min-height: 60px; }
+    .admin-form button {
+      align-self: flex-start;
+      margin-top: 6px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: none;
+      background: #0f7b4f;
+      color: white;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .hint {
+      font-size: 11px;
+      color: #6b7b70;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e6f4ea;
+      font-size: 11px;
+      color: #0f7b4f;
+      margin-right: 4px;
+    }
+
+    .view-description {
+      font-size: 13px;
+      color: #5f6f64;
+      margin-bottom: 12px;
+    }
+  </style>
 </head>
-
 <body>
-
-<nav>
-  <div class="nav-inner">
-    <a class="logo" href="#">Access<span>To</span>Excess</a>
-
-    <div class="location-pill">
-      📍 Fayetteville, NC
+  <header>
+    <div>
+      <h1>🍔 AccessToExcess (A2E)</h1>
+      <span>From “I need food” → “Here are accessible options.”</span>
     </div>
-
-    <div class="nav-search">
-      🔍
-      <input placeholder="Search food, restaurants, or meals...">
+    <div class="view-toggle">
+      <button id="userViewBtn" class="active">User View</button>
+      <button id="adminViewBtn">Admin View</button>
     </div>
+  </header>
 
-    <div class="nav-links">
-      <button class="btn-ghost">Explore</button>
-      <button class="btn-ghost">Orders</button>
-      <button class="btn-ghost">Sign In</button>
-      <button class="btn-solid">Get A2E+</button>
-    </div>
-  </div>
-</nav>
+  <main>
+    <!-- USER VIEW -->
+    <section id="userView">
+      <h2>User side — Discover food options</h2>
+      <p class="view-description">
+        This side behaves like a simplified DoorDash-style discovery page: users browse, filter, and see what’s available nearby.
+      </p>
 
-<section class="hero">
-  <div class="hero-inner">
-    <h1>Find <em>food</em> you love, instantly</h1>
-    <p>Your centralized hub for discovering meals, restaurants, and food options near you.</p>
-
-    <div class="hero-search">
-      <input placeholder="Enter your location or craving...">
-      <button class="btn-accent">Find Food →</button>
-    </div>
-
-    <div class="hero-tags">
-      <span class="hero-tag">🍔 Fast Food</span>
-      <span class="hero-tag">🥗 Healthy</span>
-      <span class="hero-tag">🍕 Pizza</span>
-      <span class="hero-tag">🍜 Asian</span>
-      <span class="hero-tag">☕ Cafés</span>
-    </div>
-  </div>
-</section>
-
-<main class="main">
-
-  <h2 class="section-title">Browse by Category</h2>
-
-  <div class="categories">
-    <a class="cat-pill active">🏠 All</a>
-    <a class="cat-pill">🍔 Burgers</a>
-    <a class="cat-pill">🍕 Pizza</a>
-    <a class="cat-pill">🥗 Healthy</a>
-    <a class="cat-pill">🍜 Asian</a>
-    <a class="cat-pill">☕ Cafés</a>
-    <a class="cat-pill">🍗 Chicken</a>
-    <a class="cat-pill">🍰 Desserts</a>
-  </div>
-
-  <div class="promos">
-    <div class="promo-card green">
-      <span class="promo-emoji">🚀</span>
-      <h3>A2E+ Food Deals</h3>
-      <p>Unlock exclusive discounts, priority listings, and premium restaurant access.</p>
-      <a class="promo-cta">Try Free →</a>
-    </div>
-
-    <div class="promo-card gold">
-      <span class="promo-emoji">📦</span>
-      <h3>Upload Your Menu</h3>
-      <p>Restaurants can list meals, update availability, and reach more customers instantly.</p>
-      <a class="promo-cta">Get Started →</a>
-    </div>
-  </div>
-
-  <div class="stats-strip">
-    <div class="stat-card"><div class="stat-num">1.8K</div><div class="stat-label">Food Listings</div></div>
-    <div class="stat-card"><div class="stat-num">920</div><div class="stat-label">Restaurants</div></div>
-    <div class="stat-card"><div class="stat-num">24ms</div><div class="stat-label">Search Speed</div></div>
-    <div class="stat-card"><div class="stat-num">4.8★</div><div class="stat-label">Avg Rating</div></div>
-  </div>
-
-  <div class="section-header">
-    <h2 class="section-title" style="margin-bottom:0">Featured Foods</h2>
-    <a class="see-all">See all →</a>
-  </div>
-
-  <div class="cards-grid">
-
-    <div class="service-card">
-      <div class="card-img">🍔<span class="card-badge">POPULAR</span></div>
-      <div class="card-body">
-        <div class="card-title">Classic Cheeseburger</div>
-        <div class="card-meta">
-          <span class="card-rating">★ 4.9</span>
-          <span class="dot"></span>
-          <span>Fast Food</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-time">⏱ 15–20 min</span>
-          <span class="card-price">$8.99</span>
-          <button class="card-add">+</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="service-card">
-      <div class="card-img">🍕<span class="card-badge">NEW</span></div>
-      <div class="card-body">
-        <div class="card-title">Pepperoni Pizza</div>
-        <div class="card-meta">
-          <span class="card-rating">★ 4.8</span>
-          <span class="dot"></span>
-          <span>Italian</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-time">⏱ 25–30 min</span>
-          <span class="card-price">$12.50</span>
-          <button class="card-add">+</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="service-card">
-      <div class="card-img">🥗</div>
-      <div class="card-body">
-        <div class="card-title">Grilled Chicken Salad</div>
-        <div class="card-meta">
-          <span class="card-rating">★ 4.7</span>
-          <span class="dot"></span>
-          <span>Healthy</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-time">⏱ 10–15 min</span>
-          <span class="card-price">$9.75</span>
-          <button class="card-add">+</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="service-card">
-      <div class="card-img">🍜</div>
-      <div class="card-body">
-        <div class="card-title">Chicken Ramen</div>
-        <div class="card-meta">
-          <span class="card-rating">★ 4.9</span>
-          <span class="dot"></span>
-          <span>Asian</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-time">⏱ 20–25 min</span>
-          <span class="card-price">$11.00</span>
-          <button class="card-add">+</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="map-strip">
-    <div class="map-info">
-      <h3>🗺️ Nearby Food Locations</h3>
-      <p>Discover restaurants, food trucks, and available meals in your area in real-time.</p>
-      <button class="btn-solid">Open Map →</button>
-    </div>
-
-    <div class="map-visual">
-      <div class="map-grid"></div>
-      <div class="map-pins">
-        <div class="map-pin"><div class="pin-label">Restaurant A</div><div class="pin-dot"></div></div>
-        <div class="map-pin"><div class="pin-label">Cafe B</div><div class="pin-dot"></div></div>
-        <div class="map-pin"><div class="pin-label">Food Truck C</div><div class="pin-dot"></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-header">
-    <h2 class="section-title">Quick Actions</h2>
-  </div>
-
-  <div class="analysis-grid">
-    <div class="analysis-card">
-      <h3>Popular Categories</h3>
-
-      <div class="bar-item"><span class="bar-label">Fast Food</span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><span class="bar-val">85%</span></div>
-      <div class="bar-item"><span class="bar-label">Healthy</span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><span class="bar-val">70%</span></div>
-      <div class="bar-item"><span class="bar-label">Desserts</span><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><span class="bar-val">65%</span></div>
-      <div class="bar-item"><span class="bar-label">Asian</span><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><span class="bar-val">78%</span></div>
-
-    </div>
-
-    <div class="analysis-card">
-      <h3>Actions</h3>
-
-      <div class="quick-actions">
-        <button class="qa-btn">
-          <div class="qa-icon">🔍</div>
-          <div>
-            <div class="qa-label">Search Food</div>
-            <div class="qa-sub">Find meals instantly</div>
+      <div class="layout-two">
+        <div>
+          <div class="filters">
+            <input id="searchInput" type="text" placeholder="Search by name or description" />
+            <select id="categoryFilter">
+              <option value="">All categories</option>
+              <option value="Fast Food">Fast Food</option>
+              <option value="Healthy">Healthy</option>
+              <option value="Groceries">Groceries</option>
+              <option value="Prepared Meals">Prepared Meals</option>
+            </select>
+            <select id="locationFilter">
+              <option value="">All locations</option>
+              <option value="Downtown">Downtown</option>
+              <option value="Campus">Campus</option>
+              <option value="West Side">West Side</option>
+            </select>
+            <select id="availabilityFilter">
+              <option value="">All items</option>
+              <option value="available">Available only</option>
+              <option value="unavailable">Unavailable only</option>
+            </select>
           </div>
-        </button>
 
-        <button class="qa-btn">
-          <div class="qa-icon">📤</div>
-          <div>
-            <div class="qa-label">Upload Menu</div>
-            <div class="qa-sub">For restaurants/vendors</div>
+          <div class="cards" id="cardsContainer">
+            <!-- Cards injected by JS -->
           </div>
-        </button>
+        </div>
 
-        <button class="qa-btn">
-          <div class="qa-icon">🗺️</div>
-          <div>
-            <div class="qa-label">View Map</div>
-            <div class="qa-sub">Nearby food locations</div>
+        <aside class="map-box">
+          <strong>📍 Location-based access</strong>
+          <span class="hint">
+            In a full build, this would be an interactive map (e.g., Google Maps) showing nearby vendors.
+          </span>
+          <div class="map-placeholder">
+            Map placeholder — “Nearby options around your location”
           </div>
-        </button>
-
-        <button class="qa-btn">
-          <div class="qa-icon">🛒</div>
-          <div>
-            <div class="qa-label">My Orders</div>
-            <div class="qa-sub">View cart & history</div>
+          <div class="hint">
+            Demo talking point: “We can plug in real geolocation and vendor coordinates here.”
           </div>
-        </button>
+        </aside>
       </div>
+    </section>
 
-    </div>
-  </div>
+    <!-- ADMIN VIEW -->
+    <section id="adminView" style="display:none;">
+      <h2>Admin side — Manage listings</h2>
+      <p class="view-description">
+        This side represents the management console: admins control what users see by adding, updating, or removing items.
+      </p>
 
-</main>
+      <div class="admin-layout">
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Available</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody">
+              <!-- Rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
+        <div class="admin-form">
+          <h3 id="formTitle">Add / Edit item</h3>
 
-      <div class="footer-brand">
-        <a class="logo">AccessToExcess</a>
-        <p>Your food discovery platform for finding meals, restaurants, and access to local food options.</p>
+          <label>Name</label>
+          <input id="formName" type="text" placeholder="e.g., Surplus Lunch Box" />
+
+          <label>Description</label>
+          <textarea id="formDescription" placeholder="Short description of the item or service"></textarea>
+
+          <label>Category</label>
+          <select id="formCategory">
+            <option value="Fast Food">Fast Food</option>
+            <option value="Healthy">Healthy</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Prepared Meals">Prepared Meals</option>
+          </select>
+
+          <label>Location</label>
+          <select id="formLocation">
+            <option value="Downtown">Downtown</option>
+            <option value="Campus">Campus</option>
+            <option value="West Side">West Side</option>
+          </select>
+
+          <label>Price (approx.)</label>
+          <input id="formPrice" type="number" step="0.01" placeholder="e.g., 6.99" />
+
+          <label>Availability</label>
+          <select id="formAvailable">
+            <option value="true">Available</option>
+            <option value="false">Unavailable</option>
+          </select>
+
+          <button id="saveItemBtn">Save item</button>
+          <span class="hint">
+            Demo talking point: “In production, this would write to a database or API. Here it updates our in-memory data.”
+          </span>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <div class="footer-col">
-        <h4>Platform</h4>
-        <a>Browse Food</a>
-        <a>Restaurants</a>
-        <a>Orders</a>
-        <a>Map</a>
-      </div>
+  <script>
+    // Seed data (acts like our "database")
+    let items = [
+      {
+        id: 1,
+        name: "Campus Café Surplus Sandwiches",
+        description: "End-of-day sandwiches offered at a discount instead of being wasted.",
+        category: "Prepared Meals",
+        location: "Campus",
+        price: 4.50,
+        available: true
+      },
+      {
+        id: 2,
+        name: "Downtown Diner Family Trays",
+        description: "Leftover family-style trays available for pickup after 8 PM.",
+        category: "Prepared Meals",
+        location: "Downtown",
+        price: 9.99,
+        available: true
+      },
+      {
+        id: 3,
+        name: "Healthy Greens Grocery Box",
+        description: "Surplus produce box from local grocer, great for meal prep.",
+        category: "Groceries",
+        location: "West Side",
+        price: 7.25,
+        available: false
+      },
+      {
+        id: 4,
+        name: "Late Night Burger Packs",
+        description: "Extra burgers and fries from a fast food partner.",
+        category: "Fast Food",
+        location: "Downtown",
+        price: 5.00,
+        available: true
+      }
+    ];
 
-      <div class="footer-col">
-        <h4>Support</h4>
-        <a>Help Center</a>
-        <a>Contact</a>
-        <a>Status</a>
-        <a>FAQs</a>
-      </div>
+    let editingId = null;
 
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a>About</a>
-        <a>Careers</a>
-        <a>Privacy</a>
-        <a>Terms</a>
-      </div>
+    const userViewBtn = document.getElementById("userViewBtn");
+    const adminViewBtn = document.getElementById("adminViewBtn");
+    const userView = document.getElementById("userView");
+    const adminView = document.getElementById("adminView");
 
-    </div>
+    userViewBtn.addEventListener("click", () => {
+      userView.style.display = "";
+      adminView.style.display = "none";
+      userViewBtn.classList.add("active");
+      adminViewBtn.classList.remove("active");
+    });
 
-    <div class="footer-bottom">
-      <span>© 2026 AccessToExcess</span>
-      <span>Built for food access & discovery 🍽️</span>
-    </div>
-  </div>
-</footer>
+    adminViewBtn.addEventListener("click", () => {
+      userView.style.display = "none";
+      adminView.style.display = "";
+      adminViewBtn.classList.add("active");
+      userViewBtn.classList.remove("active");
+      renderAdminTable();
+      resetForm();
+    });
 
-<button class="cart-fab">
-  🛒 My Cart
-  <div class="cart-count">3</div>
-</button>
+    // Filters
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const locationFilter = document.getElementById("locationFilter");
+    const availabilityFilter = document.getElementById("availabilityFilter");
+    const cardsContainer = document.getElementById("cardsContainer");
 
-<script>
-document.querySelectorAll('.cat-pill').forEach(pill => {
-  pill.addEventListener('click', function() {
-    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
+    function renderUserCards() {
+      const search = searchInput.value.toLowerCase();
+      const category = categoryFilter.value;
+      const location = locationFilter.value;
+      const availability = availabilityFilter.value;
 
-let count = 3;
-const cartCount = document.querySelector('.cart-count');
+      cardsContainer.innerHTML = "";
 
-document.querySelectorAll('.card-add').forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    count++;
-    cartCount.textContent = count;
-    this.textContent = '✓';
-    setTimeout(() => { this.textContent = '+'; }, 1200);
-  });
-});
-</script>
+      const filtered = items.filter(item => {
+        const matchesSearch =
+          item.name.toLowerCase().includes(search) ||
+          item.description.toLowerCase().includes(search);
 
+        const matchesCategory = !category || item.category === category;
+        const matchesLocation = !location || item.location === location;
+        const matchesAvailability =
+          !availability ||
+          (availability === "available" && item.available) ||
+          (availability === "unavailable" && !item.available);
+
+        return matchesSearch && matchesCategory && matchesLocation && matchesAvailability;
+      });
+
+      if (filtered.length === 0) {
+        cardsContainer.innerHTML = "<p class='hint'>No items match your filters yet.</p>";
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <div class="card-header">
+            <div class="card-title">${item.name}</div>
+            <span class="badge ${item.available ? "" : "offline"}">
+              ${item.available ? "Available" : "Unavailable"}
+            </span>
+          </div>
+          <div class="card-meta">
+            <span class="pill">${item.category}</span>
+            <span class="pill">${item.location}</span>
+          </div>
+          <div class="card-meta">${item.description}</div>
+          <div class="price">$${item.price.toFixed(2)}</div>
+        `;
+
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener("input", renderUserCards);
+    categoryFilter.addEventListener("change", renderUserCards);
+    locationFilter.addEventListener("change", renderUserCards);
+    availabilityFilter.addEventListener("change", renderUserCards);
+
+    // Admin table
+    const adminTableBody = document.getElementById("adminTableBody");
+
+    function renderAdminTable() {
+      adminTableBody.innerHTML = "";
+      items.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.category}</td>
+          <td>${item.location}</td>
+          <td>$${item.price.toFixed(2)}</td>
+          <td>${item.available ? "Yes" : "No"}</td>
+          <td class="admin-actions">
+            <button class="btn-ghost" data-edit="${item.id}">Edit</button>
+            <button class="btn-small" data-toggle="${item.id}">
+              ${item.available ? "Mark unavailable" : "Mark available"}
+            </button>
+            <button class="btn-danger" data-delete="${item.id}">Delete</button>
+          </td>
+        `;
+        adminTableBody.appendChild(tr);
+      });
+
+      adminTableBody.querySelectorAll("[data-edit]").forEach(btn => {
+        btn.addEventListener("click", () => startEdit(parseInt(btn.dataset.edit, 10)));
+      });
+      adminTableBody.querySelectorAll("[data-toggle]").forEach(btn => {
+        btn.addEventListener("click", () => toggleAvailability(parseInt(btn.dataset.toggle, 10)));
+      });
+      adminTableBody.querySelectorAll("[data-delete]").forEach(btn => {
+        btn.addEventListener("click", () => deleteItem(parseInt(btn.dataset.delete, 10)));
+      });
+    }
+
+    function toggleAvailability(id) {
+      items = items.map(item =>
+        item.id === id ? { ...item, available: !item.available } : item
+      );
+      renderAdminTable();
+      renderUserCards();
+    }
+
+    function deleteItem(id) {
+      items = items.filter(item => item.id !== id);
+      renderAdminTable();
+      renderUserCards();
+      resetForm();
+    }
+
+    // Admin form
+    const formTitle = document.getElementById("formTitle");
+    const formName = document.getElementById("formName");
+    const formDescription = document.getElementById("formDescription");
+    const formCategory = document.getElementById("formCategory");
+    const formLocation = document.getElementById("formLocation");
+    const formPrice = document.getElementById("formPrice");
+    const formAvailable = document.getElementById("formAvailable");
+    const saveItemBtn = document.getElementById("saveItemBtn");
+
+    function resetForm() {
+      editingId = null;
+      formTitle.textContent = "Add / Edit item";
+      formName.value = "";
+      formDescription.value = "";
+      formCategory.value = "Fast Food";
+      formLocation.value = "Downtown";
+      formPrice.value = "";
+      formAvailable.value = "true";
+    }
+
+    function startEdit(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      editingId = id;
+      formTitle.textContent = "Editing: " + item.name;
+      formName.value = item.name;
+      formDescription.value = item.description;
+      formCategory.value = item.category;
+      formLocation.value = item.location;
+      formPrice.value = item.price;
+      formAvailable.value = item.available ? "true" : "false";
+    }
+
+    saveItemBtn.addEventListener("click", () => {
+      const name = formName.value.trim();
+      const description = formDescription.value.trim();
+      const category = formCategory.value;
+      const location = formLocation.value;
+      const price = parseFloat(formPrice.value || "0");
+      const available = formAvailable.value === "true";
+
+      if (!name || !description || !price) {
+        alert("Please fill in name, description, and price.");
+        return;
+      }
+
+      if (editingId) {
+        items = items.map(item =>
+          item.id === editingId
+            ? { ...item, name, description, category, location, price, available }
+            : item
+        );
+      } else {
+        const newId = items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
+        items.push({ id: newId, name, description, category, location, price, available });
+      }
+
+      renderAdminTable();
+      renderUserCards();
+      resetForm();
+    });
+
+    // Initial render
+    renderUserCards();
+  </script>
 </body>
 </html>
