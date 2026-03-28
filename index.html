@@ -1,600 +1,1263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AccessToExcess (A2E) Demo</title>
-  <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
-    body { margin: 0; background: #f5f7f5; color: #123024; }
-    header {
-      background: #0f7b4f;
-      color: white;
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    header h1 { margin: 0; font-size: 20px; }
-    header span { font-size: 12px; opacity: 0.9; }
-    .view-toggle button {
-      border: none;
-      padding: 8px 14px;
-      margin-left: 8px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 13px;
-      background: rgba(255,255,255,0.15);
-      color: white;
-    }
-    .view-toggle button.active {
-      background: white;
-      color: #0f7b4f;
-      font-weight: 600;
-    }
-    main { padding: 20px 24px 40px; max-width: 1100px; margin: 0 auto; }
-    h2 { margin-top: 0; color: #0f7b4f; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AccessToExcess (A2E) — Rescue Food. Save Big.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<style>
+  /* ─── CSS VARIABLES ─── */
+  :root {
+    --g1: #00b14f;
+    --g2: #00d164;
+    --g3: #00872f;
+    --g4: #004d1a;
+    --white: #ffffff;
+    --off-white: #f5faf7;
+    --card-bg: #ffffff;
+    --text-main: #0d1f15;
+    --text-sub: #4a6358;
+    --text-muted: #8aab98;
+    --border: #d6ede2;
+    --shadow-sm: 0 2px 12px rgba(0,177,79,0.08);
+    --shadow-md: 0 8px 32px rgba(0,177,79,0.14);
+    --shadow-lg: 0 24px 64px rgba(0,177,79,0.18);
+    --radius: 18px;
+    --radius-sm: 10px;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --nav-h: 72px;
+  }
 
-    /* Layout */
-    .layout-two {
-      display: grid;
-      grid-template-columns: 2fr 1.2fr;
-      gap: 20px;
-    }
-    @media (max-width: 900px) {
-      .layout-two { grid-template-columns: 1fr; }
-    }
+  /* ─── RESET & BASE ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--off-white);
+    color: var(--text-main);
+    overflow-x: hidden;
+  }
+  img { display: block; width: 100%; object-fit: cover; }
+  a { text-decoration: none; color: inherit; }
+  button { cursor: pointer; border: none; font-family: var(--font-body); }
 
-    /* Filters */
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .filters select, .filters input {
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid #cfd8d2;
-      font-size: 13px;
-      background: white;
-    }
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--off-white); }
+  ::-webkit-scrollbar-thumb { background: var(--g2); border-radius: 99px; }
 
-    /* Cards */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 14px;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 12px 14px;
-      border: 1px solid #e0e7e2;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .badge {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #e6f4ea;
-      color: #0f7b4f;
-    }
-    .badge.offline {
-      background: #fde4e4;
-      color: #b3261e;
-    }
-    .card-title { font-weight: 600; font-size: 14px; }
-    .card-meta { font-size: 12px; color: #5f6f64; }
-    .price { font-weight: 600; font-size: 13px; color: #0f7b4f; }
+  /* ─── UTILITY ─── */
+  .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--g1); color: #fff;
+    font-family: var(--font-display); font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 99px;
+  }
+  .tag {
+    display: inline-flex; align-items: center;
+    background: #e6f7ed; color: var(--g3);
+    font-size: 12px; font-weight: 600;
+    padding: 4px 10px; border-radius: 99px; border: 1px solid #b6e8c9;
+  }
 
-    /* Map placeholder */
-    .map-box {
-      background: white;
-      border-radius: 12px;
-      border: 1px solid #e0e7e2;
-      padding: 14px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .map-placeholder {
-      flex: 1;
-      border-radius: 10px;
-      border: 1px dashed #cfd8d2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: #7a8a7f;
-      background: #f8faf8;
-    }
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    height: var(--nav-h);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: var(--shadow-md); }
+  .nav-inner {
+    width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo-icon {
+    width: 40px; height: 40px; background: var(--g1);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .nav-logo-text {
+    font-family: var(--font-display); font-weight: 800; font-size: 22px;
+    color: var(--text-main); line-height: 1;
+  }
+  .nav-logo-text span { color: var(--g1); }
+  .nav-logo-sub {
+    font-size: 10px; font-weight: 500; color: var(--text-muted);
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 32px; list-style: none;
+  }
+  .nav-links a {
+    font-weight: 500; font-size: 15px; color: var(--text-sub);
+    transition: color 0.2s; position: relative;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 2px;
+    background: var(--g1); border-radius: 99px; transform: scaleX(0);
+    transition: transform 0.25s;
+  }
+  .nav-links a:hover { color: var(--g1); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta {
+    background: var(--g1); color: #fff;
+    font-weight: 600; font-size: 14px;
+    padding: 10px 22px; border-radius: 99px;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+  .nav-cta:hover { background: var(--g3); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,177,79,0.4); }
 
-    /* Admin */
-    .admin-layout {
-      display: grid;
-      grid-template-columns: 1.6fr 1.1fr;
-      gap: 20px;
-    }
-    @media (max-width: 900px) {
-      .admin-layout { grid-template-columns: 1fr; }
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      font-size: 12px;
-    }
-    th, td {
-      padding: 8px 10px;
-      border-bottom: 1px solid #edf1ed;
-      text-align: left;
-    }
-    th { background: #f1f6f2; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; }
-    tr:last-child td { border-bottom: none; }
-    .admin-actions button {
-      border: none;
-      padding: 4px 8px;
-      margin-right: 4px;
-      border-radius: 999px;
-      font-size: 11px;
-      cursor: pointer;
-    }
-    .btn-small {
-      background: #0f7b4f;
-      color: white;
-    }
-    .btn-ghost {
-      background: #f3f6f4;
-      color: #123024;
-    }
-    .btn-danger {
-      background: #b3261e;
-      color: white;
-    }
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #001a0a 0%, #00320f 40%, #00531a 100%);
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    padding-top: var(--nav-h);
+  }
+  .hero-bg-circles {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .hero-bg-circles span {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,209,100,0.15) 0%, transparent 70%);
+    animation: pulse-circle 6s ease-in-out infinite;
+  }
+  .hero-bg-circles span:nth-child(1) { width: 700px; height: 700px; top: -200px; right: -200px; animation-delay: 0s; }
+  .hero-bg-circles span:nth-child(2) { width: 500px; height: 500px; bottom: -150px; left: -100px; animation-delay: 2s; }
+  .hero-bg-circles span:nth-child(3) { width: 300px; height: 300px; top: 40%; left: 40%; animation-delay: 4s; }
+  @keyframes pulse-circle {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 64px; align-items: center;
+    width: 100%; max-width: 1240px; margin: 0 auto; padding: 80px 24px;
+  }
+  .hero-left { animation: fadeSlideUp 0.9s cubic-bezier(.22,1,.36,1) both; }
+  .hero-right { animation: fadeSlideRight 0.9s 0.2s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeSlideRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,209,100,0.15); border: 1px solid rgba(0,209,100,0.3);
+    border-radius: 99px; padding: 6px 16px; margin-bottom: 24px;
+    color: var(--g2); font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+  }
+  .hero-eyebrow span { width: 8px; height: 8px; background: var(--g2); border-radius: 50%; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;}50%{opacity:0.3;} }
+  .hero-title {
+    font-family: var(--font-display); font-size: clamp(40px, 5vw, 68px);
+    font-weight: 800; line-height: 1.05; color: #fff;
+    margin-bottom: 20px;
+  }
+  .hero-title em { color: var(--g2); font-style: normal; }
+  .hero-desc {
+    font-size: 18px; line-height: 1.7; color: rgba(255,255,255,0.65);
+    margin-bottom: 40px; max-width: 480px;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+  .btn-primary {
+    background: var(--g1); color: #fff;
+    font-weight: 700; font-size: 16px;
+    padding: 16px 32px; border-radius: 99px;
+    transition: all 0.2s;
+    box-shadow: 0 8px 32px rgba(0,177,79,0.5);
+  }
+  .btn-primary:hover { background: var(--g2); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,177,79,0.6); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.1); color: #fff;
+    font-weight: 600; font-size: 16px;
+    padding: 16px 32px; border-radius: 99px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.18); }
+  .hero-stats {
+    display: flex; gap: 40px;
+    border-top: 1px solid rgba(255,255,255,0.1); padding-top: 32px;
+  }
+  .stat-val {
+    font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--g2); line-height: 1;
+  }
+  .stat-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
 
-    .admin-form {
-      background: white;
-      border-radius: 12px;
-      border: 1px solid #e0e7e2;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 13px;
-    }
-    .admin-form label {
-      font-size: 12px;
-      font-weight: 500;
-      color: #123024;
-    }
-    .admin-form input,
-    .admin-form select,
-    .admin-form textarea {
-      width: 100%;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid #cfd8d2;
-      font-size: 13px;
-      resize: vertical;
-    }
-    .admin-form textarea { min-height: 60px; }
-    .admin-form button {
-      align-self: flex-start;
-      margin-top: 6px;
-      padding: 7px 14px;
-      border-radius: 999px;
-      border: none;
-      background: #0f7b4f;
-      color: white;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .hint {
-      font-size: 11px;
-      color: #6b7b70;
-    }
+  /* Hero Search */
+  .hero-search-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 24px; padding: 28px;
+  }
+  .search-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  .search-row {
+    display: flex; gap: 10px; margin-bottom: 20px;
+  }
+  .search-input-wrap {
+    flex: 1; position: relative;
+  }
+  .search-input-wrap svg {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px; fill: none; stroke: rgba(255,255,255,0.4); stroke-width: 2;
+  }
+  .search-input {
+    width: 100%; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+    color: #fff; font-family: var(--font-body); font-size: 15px;
+    padding: 14px 16px 14px 42px;
+    outline: none; transition: border-color 0.2s, background 0.2s;
+  }
+  .search-input::placeholder { color: rgba(255,255,255,0.35); }
+  .search-input:focus { border-color: var(--g2); background: rgba(255,255,255,0.15); }
+  .search-btn {
+    background: var(--g1); color: #fff;
+    font-weight: 700; font-size: 15px;
+    padding: 14px 24px; border-radius: 12px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .search-btn:hover { background: var(--g2); }
+  .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);
+    font-size: 13px; font-weight: 500;
+    padding: 7px 14px; border-radius: 99px;
+    border: 1px solid rgba(255,255,255,0.12);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .chip:hover, .chip.active { background: var(--g1); color: #fff; border-color: var(--g1); }
+  /* Live deals ticker */
+  .hero-ticker {
+    background: var(--g4); color: rgba(255,255,255,0.8);
+    font-size: 13px; font-weight: 500;
+    padding: 12px 20px; border-radius: 12px; margin-top: 20px;
+    overflow: hidden; position: relative;
+  }
+  .ticker-inner {
+    display: flex; gap: 48px;
+    animation: scroll-ticker 22s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-inner span { color: var(--g2); font-weight: 700; }
+  @keyframes scroll-ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
 
-    .pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #e6f4ea;
-      font-size: 11px;
-      color: #0f7b4f;
-      margin-right: 4px;
-    }
+  /* ─── SECTION COMMON ─── */
+  section { padding: 96px 0; }
+  .section-head { margin-bottom: 48px; }
+  .section-head .badge { margin-bottom: 16px; }
+  .section-head h2 {
+    font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800; line-height: 1.1; color: var(--text-main);
+  }
+  .section-head h2 em { color: var(--g1); font-style: normal; }
+  .section-head p { font-size: 17px; color: var(--text-sub); margin-top: 12px; max-width: 520px; }
+  .section-row {
+    display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 40px;
+  }
+  .see-all {
+    color: var(--g1); font-weight: 600; font-size: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: gap 0.2s;
+  }
+  .see-all:hover { gap: 10px; }
 
-    .view-description {
-      font-size: 13px;
-      color: #5f6f64;
-      margin-bottom: 12px;
-    }
-  </style>
+  /* ─── CATEGORY PILLS ─── */
+  .categories { background: #fff; border-bottom: 1px solid var(--border); padding: 0; position: sticky; top: var(--nav-h); z-index: 100; }
+  .cat-scroll {
+    display: flex; gap: 8px; padding: 16px 24px; overflow-x: auto;
+    scrollbar-width: none; max-width: 1240px; margin: 0 auto;
+  }
+  .cat-scroll::-webkit-scrollbar { display: none; }
+  .cat-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--off-white); border: 1.5px solid var(--border);
+    color: var(--text-sub); font-size: 14px; font-weight: 600;
+    padding: 9px 18px; border-radius: 99px;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .cat-pill.active, .cat-pill:hover { background: var(--g1); color: #fff; border-color: var(--g1); }
+  .cat-pill span { font-size: 18px; }
+
+  /* ─── STORE CARDS ─── */
+  .stores-section { background: var(--off-white); }
+  .stores-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;
+  }
+  .store-card {
+    background: var(--card-bg); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow-sm);
+    transition: transform 0.3s cubic-bezier(.22,1,.36,1), box-shadow 0.3s;
+    cursor: pointer;
+    animation: fadeIn 0.6s both;
+  }
+  .store-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .store-card:nth-child(1){animation-delay:.05s}
+  .store-card:nth-child(2){animation-delay:.10s}
+  .store-card:nth-child(3){animation-delay:.15s}
+  .store-card:nth-child(4){animation-delay:.20s}
+  .store-card:nth-child(5){animation-delay:.25s}
+  .store-card:nth-child(6){animation-delay:.30s}
+  .store-img-wrap { position: relative; height: 180px; overflow: hidden; }
+  .store-img-wrap img { height: 100%; transition: transform 0.5s cubic-bezier(.22,1,.36,1); }
+  .store-card:hover .store-img-wrap img { transform: scale(1.07); }
+  .store-badge-discount {
+    position: absolute; top: 14px; left: 14px;
+    background: var(--g1); color: #fff;
+    font-family: var(--font-display); font-size: 13px; font-weight: 800;
+    padding: 5px 12px; border-radius: 99px;
+    box-shadow: 0 4px 12px rgba(0,177,79,0.5);
+  }
+  .store-badge-urgent {
+    position: absolute; top: 14px; right: 14px;
+    background: #ff4d00; color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    padding: 5px 10px; border-radius: 99px;
+    animation: urgentPulse 2s infinite;
+  }
+  @keyframes urgentPulse { 0%,100%{opacity:1}50%{opacity:0.6} }
+  .store-info { padding: 18px 18px 16px; }
+  .store-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+  .store-meta { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+  .store-meta-item { display: flex; align-items: center; gap: 4px; }
+  .store-meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  .star { color: #f5a623; }
+  .store-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .store-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 14px; border-top: 1px solid var(--border);
+  }
+  .store-price-info { display: flex; flex-direction: column; }
+  .store-price-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .store-price-val { font-family: var(--font-display); font-size: 17px; font-weight: 800; color: var(--g1); }
+  .store-price-orig { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
+  .store-cta {
+    background: var(--g1); color: #fff;
+    font-weight: 700; font-size: 13px;
+    padding: 10px 18px; border-radius: 12px;
+    transition: all 0.2s;
+  }
+  .store-cta:hover { background: var(--g3); transform: scale(1.04); }
+  .store-time {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; color: #ff4d00;
+    margin-bottom: 6px;
+  }
+
+  /* ─── FEATURED STRIP ─── */
+  .featured-strip {
+    background: linear-gradient(135deg, var(--g4) 0%, var(--g3) 100%);
+    padding: 80px 0; overflow: hidden; position: relative;
+  }
+  .featured-strip::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300d164' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .featured-inner { position: relative; }
+  .featured-inner h2 {
+    font-family: var(--font-display); font-size: clamp(28px,4vw,44px);
+    font-weight: 800; color: #fff; margin-bottom: 36px;
+  }
+  .featured-inner h2 em { color: var(--g2); font-style: normal; }
+  .featured-scroll-wrap { overflow-x: auto; scrollbar-width: none; }
+  .featured-scroll-wrap::-webkit-scrollbar { display: none; }
+  .featured-scroll { display: flex; gap: 20px; padding-bottom: 8px; }
+  .deal-card {
+    flex: 0 0 280px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .deal-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .deal-img { height: 150px; position: relative; }
+  .deal-img img { height: 100%; }
+  .deal-discount-overlay {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+  }
+  .deal-percent {
+    position: absolute; bottom: 12px; left: 12px;
+    font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--g2);
+  }
+  .deal-body { padding: 16px; }
+  .deal-store { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+  .deal-item { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  .deal-prices { display: flex; align-items: center; gap: 10px; }
+  .deal-now { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--g2); }
+  .deal-was { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: line-through; }
+  .deal-expires { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 8px; }
+  .deal-expires span { color: #ff8c42; font-weight: 600; }
+
+  /* ─── HOW IT WORKS ─── */
+  .how-section { background: #fff; }
+  .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; }
+  .step { text-align: center; position: relative; }
+  .step-num {
+    width: 64px; height: 64px; border-radius: 20px;
+    background: linear-gradient(135deg, var(--g1), var(--g2));
+    color: #fff; font-family: var(--font-display); font-size: 28px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; box-shadow: 0 8px 24px rgba(0,177,79,0.4);
+    position: relative; z-index: 1;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute; top: 32px; left: calc(50% + 40px);
+    right: calc(-50% + 40px); height: 2px;
+    background: linear-gradient(90deg, var(--g2), transparent);
+    z-index: 0;
+  }
+  .step h3 { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+  .step p { font-size: 15px; color: var(--text-sub); line-height: 1.6; }
+
+  /* ─── MAP SECTION ─── */
+  .map-section { background: var(--off-white); }
+  .map-container {
+    border-radius: 24px; overflow: hidden;
+    box-shadow: var(--shadow-lg); position: relative;
+    height: 480px; background: #1a2e22;
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* Simulated map grid */
+  .map-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,177,79,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,177,79,0.07) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .map-road-h {
+    position: absolute; left: 0; right: 0; height: 3px;
+    background: rgba(255,255,255,0.08);
+  }
+  .map-road-v {
+    position: absolute; top: 0; bottom: 0; width: 3px;
+    background: rgba(255,255,255,0.08);
+  }
+  .map-pin {
+    position: absolute; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center;
+    transform: translateX(-50%);
+    transition: transform 0.2s;
+  }
+  .map-pin:hover { transform: translateX(-50%) scale(1.15); }
+  .pin-icon {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: var(--g1); display: flex; align-items: center; justify-content: center;
+    font-size: 20px; box-shadow: 0 4px 20px rgba(0,177,79,0.6);
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  .pin-label {
+    background: rgba(0,0,0,0.8); color: #fff;
+    font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+    margin-top: 6px; white-space: nowrap;
+  }
+  .pin-discount {
+    position: absolute; top: -8px; right: -8px;
+    background: #ff4d00; color: #fff;
+    font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 4px;
+  }
+  .map-center-you {
+    position: absolute; width: 16px; height: 16px;
+    border-radius: 50%; background: #4a9eff;
+    border: 3px solid #fff; box-shadow: 0 0 0 8px rgba(74,158,255,0.2);
+    animation: youPulse 2s infinite;
+  }
+  @keyframes youPulse {
+    0%,100%{box-shadow:0 0 0 8px rgba(74,158,255,0.2);}
+    50%{box-shadow:0 0 0 16px rgba(74,158,255,0.05);}
+  }
+  .map-legend {
+    position: absolute; bottom: 20px; left: 20px;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(12px);
+    border-radius: 14px; padding: 14px 18px; color: #fff;
+    font-size: 13px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .legend-item:last-child { margin-bottom: 0; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .map-stats {
+    position: absolute; top: 20px; right: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .map-stat-pill {
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(12px);
+    border-radius: 99px; padding: 8px 16px;
+    color: #fff; font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .map-stat-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--g2); }
+
+  /* ─── IMPACT ─── */
+  .impact-section {
+    background: linear-gradient(135deg, #001409 0%, #002810 100%);
+    position: relative; overflow: hidden;
+  }
+  .impact-section::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,177,79,0.12) 0%, transparent 70%);
+  }
+  .impact-inner { position: relative; text-align: center; }
+  .impact-inner h2 {
+    font-family: var(--font-display); font-size: clamp(28px,4vw,48px);
+    font-weight: 800; color: #fff; margin-bottom: 16px;
+  }
+  .impact-inner h2 em { color: var(--g2); font-style: normal; }
+  .impact-inner p { font-size: 18px; color: rgba(255,255,255,0.6); max-width: 580px; margin: 0 auto 60px; }
+  .impact-nums {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; margin-bottom: 60px;
+  }
+  .impact-num {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 32px 20px;
+    transition: transform 0.3s;
+  }
+  .impact-num:hover { transform: translateY(-4px); }
+  .impact-num-val {
+    font-family: var(--font-display); font-size: 44px; font-weight: 800;
+    color: var(--g2); line-height: 1; margin-bottom: 8px;
+  }
+  .impact-num-label { font-size: 14px; color: rgba(255,255,255,0.5); }
+  .impact-cta {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: var(--g1); color: #fff;
+    font-family: var(--font-display); font-size: 18px; font-weight: 700;
+    padding: 20px 48px; border-radius: 99px;
+    box-shadow: 0 12px 48px rgba(0,177,79,0.5);
+    transition: all 0.2s;
+  }
+  .impact-cta:hover { background: var(--g2); transform: translateY(-2px); box-shadow: 0 16px 56px rgba(0,177,79,0.65); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #000d05; color: rgba(255,255,255,0.7);
+    padding: 64px 0 32px;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+  .footer-brand p { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.45); margin-top: 12px; max-width: 260px; }
+  .footer-col h4 { font-family: var(--font-display); font-weight: 700; color: #fff; font-size: 15px; margin-bottom: 16px; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 10px; }
+  .footer-col ul li a { font-size: 14px; color: rgba(255,255,255,0.45); transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--g2); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 28px; display: flex;
+    align-items: center; justify-content: space-between;
+    font-size: 13px; color: rgba(255,255,255,0.3);
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 2000; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    padding: 20px;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #fff; border-radius: 28px; max-width: 560px; width: 100%;
+    overflow: hidden; transform: scale(0.92) translateY(20px);
+    transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+  .modal-img { height: 220px; position: relative; }
+  .modal-img img { height: 100%; }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(0,0,0,0.5); color: #fff;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.2s;
+    border: none;
+  }
+  .modal-close:hover { background: rgba(0,0,0,0.8); }
+  .modal-body { padding: 24px 28px 28px; }
+  .modal-name { font-family: var(--font-display); font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .modal-address { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+  .modal-items { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+  .modal-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-radius: 14px;
+    border: 1.5px solid var(--border); transition: border-color 0.2s;
+  }
+  .modal-item:hover { border-color: var(--g1); }
+  .modal-item-name { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+  .modal-item-qty { font-size: 12px; color: var(--text-muted); }
+  .modal-item-prices { text-align: right; }
+  .modal-item-now { font-family: var(--font-display); font-size: 17px; font-weight: 800; color: var(--g1); }
+  .modal-item-was { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
+  .modal-get-btn {
+    width: 100%; background: var(--g1); color: #fff;
+    font-family: var(--font-display); font-size: 17px; font-weight: 700;
+    padding: 16px; border-radius: 14px; margin-top: 24px;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .modal-get-btn:hover { background: var(--g3); transform: scale(1.02); }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--g4); color: #fff;
+    font-size: 15px; font-weight: 600;
+    padding: 16px 28px; border-radius: 99px;
+    box-shadow: var(--shadow-lg); z-index: 3000;
+    display: flex; align-items: center; gap: 10px;
+    transition: transform 0.4s cubic-bezier(.22,1,.36,1), opacity 0.4s;
+    opacity: 0;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast-icon { font-size: 20px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width:900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .step:not(:last-child)::after { display: none; }
+    .impact-nums { grid-template-columns: repeat(2,1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+  }
+  @media(max-width:600px) {
+    .impact-nums { grid-template-columns: 1fr 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 20px; }
+  }
+
+  /* scroll-reveal */
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>🍔 AccessToExcess (A2E)</h1>
-      <span>From “I need food” → “Here are accessible options.”</span>
-    </div>
-    <div class="view-toggle">
-      <button id="userViewBtn" class="active">User View</button>
-      <button id="adminViewBtn">Admin View</button>
-    </div>
-  </header>
 
-  <main>
-    <!-- USER VIEW -->
-    <section id="userView">
-      <h2>User side — Discover food options</h2>
-      <p class="view-description">
-        This side behaves like a simplified DoorDash-style discovery page: users browse, filter, and see what’s available nearby.
-      </p>
-
-      <div class="layout-two">
-        <div>
-          <div class="filters">
-            <input id="searchInput" type="text" placeholder="Search by name or description" />
-            <select id="categoryFilter">
-              <option value="">All categories</option>
-              <option value="Fast Food">Fast Food</option>
-              <option value="Healthy">Healthy</option>
-              <option value="Groceries">Groceries</option>
-              <option value="Prepared Meals">Prepared Meals</option>
-            </select>
-            <select id="locationFilter">
-              <option value="">All locations</option>
-              <option value="Downtown">Downtown</option>
-              <option value="Campus">Campus</option>
-              <option value="West Side">West Side</option>
-            </select>
-            <select id="availabilityFilter">
-              <option value="">All items</option>
-              <option value="available">Available only</option>
-              <option value="unavailable">Unavailable only</option>
-            </select>
-          </div>
-
-          <div class="cards" id="cardsContainer">
-            <!-- Cards injected by JS -->
-          </div>
-        </div>
-
-        <aside class="map-box">
-          <strong>📍 Location-based access</strong>
-          <span class="hint">
-            In a full build, this would be an interactive map (e.g., Google Maps) showing nearby vendors.
-          </span>
-          <div class="map-placeholder">
-            Map placeholder — “Nearby options around your location”
-          </div>
-          <div class="hint">
-            Demo talking point: “We can plug in real geolocation and vendor coordinates here.”
-          </div>
-        </aside>
+<!-- ══════════════ NAV ══════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">🍀</div>
+      <div>
+        <div class="nav-logo-text">Access<span>To</span>Excess</div>
+        <div class="nav-logo-sub">A2E — Rescue Food Platform</div>
       </div>
-    </section>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#stores">Stores</a></li>
+      <li><a href="#deals">Deals</a></li>
+      <li><a href="#map">Near Me</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#impact">Impact</a></li>
+    </ul>
+    <button class="nav-cta">Find Food Now →</button>
+  </div>
+</nav>
 
-    <!-- ADMIN VIEW -->
-    <section id="adminView" style="display:none;">
-      <h2>Admin side — Manage listings</h2>
-      <p class="view-description">
-        This side represents the management console: admins control what users see by adding, updating, or removing items.
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg-circles">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span></span>
+        Live Now · 47 Stores Active Near You
+      </div>
+      <h1 class="hero-title">
+        Rescue Food.<br>
+        <em>Save Big.</em><br>
+        Waste Nothing.
+      </h1>
+      <p class="hero-desc">
+        AccessToExcess connects you with local stores selling surplus food at steep discounts — up to 70% off — before it goes to waste. Real deals. Real stores. Real savings.
       </p>
-
-      <div class="admin-layout">
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Location</th>
-                <th>Price</th>
-                <th>Available</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="adminTableBody">
-              <!-- Rows injected by JS -->
-            </tbody>
-          </table>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="scrollTo('#stores')">Browse Food Deals →</button>
+        <button class="btn-ghost" onclick="scrollTo('#how')">How It Works</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-val">$2.4M</div><div class="stat-label">Food saved this month</div></div>
+        <div><div class="stat-val">340+</div><div class="stat-label">Partner stores</div></div>
+        <div><div class="stat-val">70%</div><div class="stat-label">Average savings</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-search-card">
+        <div class="search-label">Find excess food near you</div>
+        <div class="search-row">
+          <div class="search-input-wrap">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" type="text" placeholder="Search store or food type…" id="heroSearch" />
+          </div>
+          <button class="search-btn" onclick="handleSearch()">Search</button>
         </div>
-
-        <div class="admin-form">
-          <h3 id="formTitle">Add / Edit item</h3>
-
-          <label>Name</label>
-          <input id="formName" type="text" placeholder="e.g., Surplus Lunch Box" />
-
-          <label>Description</label>
-          <textarea id="formDescription" placeholder="Short description of the item or service"></textarea>
-
-          <label>Category</label>
-          <select id="formCategory">
-            <option value="Fast Food">Fast Food</option>
-            <option value="Healthy">Healthy</option>
-            <option value="Groceries">Groceries</option>
-            <option value="Prepared Meals">Prepared Meals</option>
-          </select>
-
-          <label>Location</label>
-          <select id="formLocation">
-            <option value="Downtown">Downtown</option>
-            <option value="Campus">Campus</option>
-            <option value="West Side">West Side</option>
-          </select>
-
-          <label>Price (approx.)</label>
-          <input id="formPrice" type="number" step="0.01" placeholder="e.g., 6.99" />
-
-          <label>Availability</label>
-          <select id="formAvailable">
-            <option value="true">Available</option>
-            <option value="false">Unavailable</option>
-          </select>
-
-          <button id="saveItemBtn">Save item</button>
-          <span class="hint">
-            Demo talking point: “In production, this would write to a database or API. Here it updates our in-memory data.”
-          </span>
+        <div class="filter-chips">
+          <div class="chip active" onclick="filterCat(this,'all')">🍽️ All</div>
+          <div class="chip" onclick="filterCat(this,'bakery')">🥖 Bakery</div>
+          <div class="chip" onclick="filterCat(this,'grocery')">🛒 Grocery</div>
+          <div class="chip" onclick="filterCat(this,'restaurant')">🍔 Restaurant</div>
+          <div class="chip" onclick="filterCat(this,'deli')">🥪 Deli</div>
+          <div class="chip" onclick="filterCat(this,'produce')">🥦 Produce</div>
+        </div>
+        <div class="hero-ticker">
+          <div class="ticker-inner" id="ticker">
+            🔥 Panera Bread — Surprise Bags <span>$5.99</span> &nbsp;·&nbsp;
+            🥩 Whole Foods — Meat Bundle <span>$12.99</span> &nbsp;·&nbsp;
+            🍕 Pizza Hut — End-of-Day Boxes <span>$4.99</span> &nbsp;·&nbsp;
+            🥖 Sprouts Farmers Market — Bread Rescue <span>$3.49</span> &nbsp;·&nbsp;
+            🍣 H Mart — Sushi Surplus <span>$8.99</span> &nbsp;·&nbsp;
+            🧁 Nothing Bundt Cakes — Bundtlet Bags <span>$6.49</span> &nbsp;·&nbsp;
+            🔥 Panera Bread — Surprise Bags <span>$5.99</span> &nbsp;·&nbsp;
+            🥩 Whole Foods — Meat Bundle <span>$12.99</span> &nbsp;·&nbsp;
+            🍕 Pizza Hut — End-of-Day Boxes <span>$4.99</span> &nbsp;·&nbsp;
+            🥖 Sprouts Farmers Market — Bread Rescue <span>$3.49</span> &nbsp;·&nbsp;
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
+</section>
 
-  <script>
-    // Seed data (acts like our "database")
-    let items = [
-      {
-        id: 1,
-        name: "Campus Café Surplus Sandwiches",
-        description: "End-of-day sandwiches offered at a discount instead of being wasted.",
-        category: "Prepared Meals",
-        location: "Campus",
-        price: 4.50,
-        available: true
-      },
-      {
-        id: 2,
-        name: "Downtown Diner Family Trays",
-        description: "Leftover family-style trays available for pickup after 8 PM.",
-        category: "Prepared Meals",
-        location: "Downtown",
-        price: 9.99,
-        available: true
-      },
-      {
-        id: 3,
-        name: "Healthy Greens Grocery Box",
-        description: "Surplus produce box from local grocer, great for meal prep.",
-        category: "Groceries",
-        location: "West Side",
-        price: 7.25,
-        available: false
-      },
-      {
-        id: 4,
-        name: "Late Night Burger Packs",
-        description: "Extra burgers and fries from a fast food partner.",
-        category: "Fast Food",
-        location: "Downtown",
-        price: 5.00,
-        available: true
-      }
-    ];
+<!-- ══════════════ CATEGORY PILLS ══════════════ -->
+<div class="categories" id="categories">
+  <div class="cat-scroll">
+    <button class="cat-pill active" onclick="filterCategory(this,'all')"><span>🌿</span> All Stores</button>
+    <button class="cat-pill" onclick="filterCategory(this,'bakery')"><span>🥖</span> Bakery</button>
+    <button class="cat-pill" onclick="filterCategory(this,'grocery')"><span>🛒</span> Grocery</button>
+    <button class="cat-pill" onclick="filterCategory(this,'restaurant')"><span>🍔</span> Restaurant</button>
+    <button class="cat-pill" onclick="filterCategory(this,'deli')"><span>🥪</span> Deli & Sandwich</button>
+    <button class="cat-pill" onclick="filterCategory(this,'produce')"><span>🥦</span> Produce</button>
+    <button class="cat-pill" onclick="filterCategory(this,'sushi')"><span>🍣</span> Sushi</button>
+    <button class="cat-pill" onclick="filterCategory(this,'pizza')"><span>🍕</span> Pizza</button>
+    <button class="cat-pill" onclick="filterCategory(this,'dessert')"><span>🧁</span> Dessert</button>
+  </div>
+</div>
 
-    let editingId = null;
+<!-- ══════════════ STORES GRID ══════════════ -->
+<section class="stores-section" id="stores">
+  <div class="container">
+    <div class="section-row">
+      <div class="section-head" style="margin-bottom:0">
+        <div class="badge">🔴 Live Deals</div>
+        <h2 style="margin-top:12px">Stores <em>Near You</em></h2>
+        <p>Pickup surplus food today. Limited quantities — act fast.</p>
+      </div>
+      <a class="see-all" href="#">View all stores →</a>
+    </div>
+    <div class="stores-grid" id="storesGrid">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+</section>
 
-    const userViewBtn = document.getElementById("userViewBtn");
-    const adminViewBtn = document.getElementById("adminViewBtn");
-    const userView = document.getElementById("userView");
-    const adminView = document.getElementById("adminView");
+<!-- ══════════════ FEATURED DEALS ══════════════ -->
+<section class="featured-strip" id="deals">
+  <div class="container featured-inner">
+    <h2>Today's <em>Best Deals</em></h2>
+    <div class="featured-scroll-wrap">
+      <div class="featured-scroll" id="featuredScroll">
+        <!-- injected by JS -->
+      </div>
+    </div>
+  </div>
+</section>
 
-    userViewBtn.addEventListener("click", () => {
-      userView.style.display = "";
-      adminView.style.display = "none";
-      userViewBtn.classList.add("active");
-      adminViewBtn.classList.remove("active");
-    });
+<!-- ══════════════ HOW IT WORKS ══════════════ -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="section-head" style="text-align:center;max-width:600px;margin:0 auto 56px;">
+      <div class="badge">Simple Process</div>
+      <h2 style="margin-top:12px">How <em>A2E</em> Works</h2>
+      <p>Three steps from hunger to happy. No waste, no hassle.</p>
+    </div>
+    <div class="steps-grid reveal">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Browse Live Deals</h3>
+        <p>See real-time surplus listings from local stores. Filter by food type, distance, or discount level.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Claim Your Bag</h3>
+        <p>Select a surprise bag or specific item. Availability is limited and refreshes daily — sometimes hourly.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Pick Up & Enjoy</h3>
+        <p>Head to the store in the pickup window shown. Show your confirmation and walk away with great food for less.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    adminViewBtn.addEventListener("click", () => {
-      userView.style.display = "none";
-      adminView.style.display = "";
-      adminViewBtn.classList.add("active");
-      userViewBtn.classList.remove("active");
-      renderAdminTable();
-      resetForm();
-    });
+<!-- ══════════════ MAP ══════════════ -->
+<section class="map-section" id="map">
+  <div class="container">
+    <div class="section-row reveal">
+      <div class="section-head" style="margin-bottom:0">
+        <div class="badge">📍 Near Me</div>
+        <h2 style="margin-top:12px">Food Access <em>Map</em></h2>
+        <p>47 active stores dropping surplus food right now in your area.</p>
+      </div>
+    </div>
+    <div class="map-container" style="margin-top:32px;">
+      <div class="map-grid"></div>
+      <!-- Roads -->
+      <div class="map-road-h" style="top:30%"></div>
+      <div class="map-road-h" style="top:55%"></div>
+      <div class="map-road-h" style="top:75%"></div>
+      <div class="map-road-v" style="left:25%"></div>
+      <div class="map-road-v" style="left:60%"></div>
+      <div class="map-road-v" style="left:80%"></div>
+      <!-- You -->
+      <div class="map-center-you" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+      <!-- Pins -->
+      <div class="map-pin" style="top:26%;left:22%;" onclick="openModal(0)">
+        <div class="pin-icon" style="background:#006b2e">🥖<div class="pin-discount">-60%</div></div>
+        <div class="pin-label">Panera · 0.4mi</div>
+      </div>
+      <div class="map-pin" style="top:40%;left:65%;" onclick="openModal(1)">
+        <div class="pin-icon" style="background:#006b2e">🛒<div class="pin-discount">-55%</div></div>
+        <div class="pin-label">Whole Foods · 0.9mi</div>
+      </div>
+      <div class="map-pin" style="top:62%;left:35%;" onclick="openModal(2)">
+        <div class="pin-icon" style="background:#006b2e">🍕<div class="pin-discount">-70%</div></div>
+        <div class="pin-label">Pizza Hut · 1.2mi</div>
+      </div>
+      <div class="map-pin" style="top:18%;left:70%;" onclick="openModal(3)">
+        <div class="pin-icon" style="background:#006b2e">🍣<div class="pin-discount">-50%</div></div>
+        <div class="pin-label">H Mart · 1.7mi</div>
+      </div>
+      <div class="map-pin" style="top:72%;left:75%;" onclick="openModal(4)">
+        <div class="pin-icon" style="background:#006b2e">🧁<div class="pin-discount">-65%</div></div>
+        <div class="pin-label">NBC · 2.1mi</div>
+      </div>
+      <div class="map-pin" style="top:45%;left:14%;" onclick="openModal(5)">
+        <div class="pin-icon" style="background:#006b2e">🥦<div class="pin-discount">-45%</div></div>
+        <div class="pin-label">Sprouts · 2.4mi</div>
+      </div>
+      <!-- Legend -->
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--g1)"></div>Active Deal</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4a9eff"></div>Your Location</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ff8c42"></div>Closing Soon</div>
+      </div>
+      <!-- Stats -->
+      <div class="map-stats">
+        <div class="map-stat-pill"><div class="dot"></div>47 stores active</div>
+        <div class="map-stat-pill"><div class="dot" style="background:#ff8c42"></div>12 closing in 1hr</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    // Filters
-    const searchInput = document.getElementById("searchInput");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const locationFilter = document.getElementById("locationFilter");
-    const availabilityFilter = document.getElementById("availabilityFilter");
-    const cardsContainer = document.getElementById("cardsContainer");
+<!-- ══════════════ IMPACT ══════════════ -->
+<section class="impact-section" id="impact">
+  <div class="container impact-inner reveal">
+    <div class="badge" style="margin-bottom:20px">🌍 Our Impact</div>
+    <h2>Food Rescue.<br><em>Real Numbers.</em></h2>
+    <p>Every bag saved is a meal rescued and money back in your pocket.</p>
+    <div class="impact-nums">
+      <div class="impact-num">
+        <div class="impact-num-val">2.4M</div>
+        <div class="impact-num-label">lbs of food rescued</div>
+      </div>
+      <div class="impact-num">
+        <div class="impact-num-val">340+</div>
+        <div class="impact-num-label">partner stores</div>
+      </div>
+      <div class="impact-num">
+        <div class="impact-num-val">$8.2M</div>
+        <div class="impact-num-label">saved by shoppers</div>
+      </div>
+      <div class="impact-num">
+        <div class="impact-num-val">67%</div>
+        <div class="impact-num-label">avg. discount per bag</div>
+      </div>
+    </div>
+    <button class="impact-cta" onclick="scrollTo('#stores')">
+      🍀 Start Saving Today
+    </button>
+  </div>
+</section>
 
-    function renderUserCards() {
-      const search = searchInput.value.toLowerCase();
-      const category = categoryFilter.value;
-      const location = locationFilter.value;
-      const availability = availabilityFilter.value;
-
-      cardsContainer.innerHTML = "";
-
-      const filtered = items.filter(item => {
-        const matchesSearch =
-          item.name.toLowerCase().includes(search) ||
-          item.description.toLowerCase().includes(search);
-
-        const matchesCategory = !category || item.category === category;
-        const matchesLocation = !location || item.location === location;
-        const matchesAvailability =
-          !availability ||
-          (availability === "available" && item.available) ||
-          (availability === "unavailable" && !item.available);
-
-        return matchesSearch && matchesCategory && matchesLocation && matchesAvailability;
-      });
-
-      if (filtered.length === 0) {
-        cardsContainer.innerHTML = "<p class='hint'>No items match your filters yet.</p>";
-        return;
-      }
-
-      filtered.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-          <div class="card-header">
-            <div class="card-title">${item.name}</div>
-            <span class="badge ${item.available ? "" : "offline"}">
-              ${item.available ? "Available" : "Unavailable"}
-            </span>
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <div class="nav-logo-icon">🍀</div>
+          <div>
+            <div class="nav-logo-text" style="font-size:18px">Access<span>To</span>Excess</div>
           </div>
-          <div class="card-meta">
-            <span class="pill">${item.category}</span>
-            <span class="pill">${item.location}</span>
+        </div>
+        <p>Connecting communities with surplus food at steep discounts. Fight waste. Save money. Eat well.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#">Browse Stores</a></li>
+          <li><a href="#">Today's Deals</a></li>
+          <li><a href="#">Near Me</a></li>
+          <li><a href="#">Categories</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>For Stores</h4>
+        <ul>
+          <li><a href="#">List Your Store</a></li>
+          <li><a href="#">Partner Dashboard</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Success Stories</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About A2E</a></li>
+          <li><a href="#">Mission</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 AccessToExcess (A2E). All rights reserved.</span>
+      <span>Built to rescue food · Save money · Reduce waste 🌿</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════ MODAL ══════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+  <div class="modal" id="modal">
+    <div class="modal-img">
+      <img id="modalImg" src="" alt="" />
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-address" id="modalAddress"></div>
+      <div id="modalTags" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+      <div class="modal-items" id="modalItems"></div>
+      <button class="modal-get-btn" onclick="claimBag()">🛍️ Claim This Deal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TOAST ══════════════ -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Deal claimed! Head to the store.</span>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────
+const STORES = [
+  {
+    id: 0, name: "Panera Bread", category: "bakery",
+    img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+    address: "3215 Raeford Rd, Fayetteville, NC 28303",
+    rating: 4.7, distance: "0.4 mi", time: "3:00–5:00 PM",
+    urgent: true,
+    tags: ["🥖 Bakery","Surprise Bag","Daily"],
+    discount: "-60%",
+    items: [
+      {name:"Bread Surprise Bag",qty:"~4 items",now:"$5.99",was:"$14.99"},
+      {name:"Pastry Bundle",qty:"~6 pastries",now:"$7.99",was:"$19.99"},
+    ]
+  },
+  {
+    id: 1, name: "Whole Foods Market", category: "grocery",
+    img: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80",
+    address: "419 Westwood Shopping Ctr, Fayetteville, NC 28314",
+    rating: 4.5, distance: "0.9 mi", time: "4:00–6:00 PM",
+    urgent: false,
+    tags: ["🛒 Grocery","Meat","Organic"],
+    discount: "-55%",
+    items: [
+      {name:"Prepared Foods Box",qty:"Assorted hot foods",now:"$9.99",was:"$22.00"},
+      {name:"Meat Markdown Bundle",qty:"2–3 lbs",now:"$12.99",was:"$28.99"},
+    ]
+  },
+  {
+    id: 2, name: "Pizza Hut", category: "pizza",
+    img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80",
+    address: "4020 Bragg Blvd, Fayetteville, NC 28303",
+    rating: 4.2, distance: "1.2 mi", time: "8:30–9:30 PM",
+    urgent: true,
+    tags: ["🍕 Pizza","End-of-Day","Hot"],
+    discount: "-70%",
+    items: [
+      {name:"End-of-Day Pizza Box",qty:"1 large pizza",now:"$4.99",was:"$16.99"},
+      {name:"Wings & Bread Bundle",qty:"~10 wings + breadsticks",now:"$6.99",was:"$19.99"},
+    ]
+  },
+  {
+    id: 3, name: "H Mart", category: "sushi",
+    img: "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80",
+    address: "1350 Skibo Rd, Fayetteville, NC 28314",
+    rating: 4.8, distance: "1.7 mi", time: "6:00–7:30 PM",
+    urgent: false,
+    tags: ["🍣 Sushi","Korean","Fresh"],
+    discount: "-50%",
+    items: [
+      {name:"Sushi Surplus Box",qty:"20 pc assorted",now:"$8.99",was:"$18.99"},
+      {name:"Korean Side Dish Pack",qty:"4 banchan cups",now:"$5.49",was:"$10.99"},
+    ]
+  },
+  {
+    id: 4, name: "Nothing Bundt Cakes", category: "dessert",
+    img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80",
+    address: "546 N McPherson Church Rd, Fayetteville, NC 28303",
+    rating: 4.9, distance: "2.1 mi", time: "5:30–7:00 PM",
+    urgent: false,
+    tags: ["🧁 Dessert","Cakes","Sweet"],
+    discount: "-65%",
+    items: [
+      {name:"Bundtlet Bag",qty:"4 bundtlets, mixed flavors",now:"$6.49",was:"$18.00"},
+      {name:"Tiered Cake Rescue",qty:"1 small bundt cake",now:"$9.99",was:"$28.00"},
+    ]
+  },
+  {
+    id: 5, name: "Sprouts Farmers Market", category: "produce",
+    img: "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=600&q=80",
+    address: "111 Westwood Shopping Ctr, Fayetteville, NC 28314",
+    rating: 4.6, distance: "2.4 mi", time: "3:30–5:30 PM",
+    urgent: false,
+    tags: ["🥦 Produce","Organic","Bread"],
+    discount: "-45%",
+    items: [
+      {name:"Artisan Bread Bag",qty:"3 loaves, mixed",now:"$3.49",was:"$6.49"},
+      {name:"Produce Rescue Box",qty:"5–7 lbs mixed veg",now:"$7.99",was:"$14.99"},
+    ]
+  },
+];
+
+const DEALS = [
+  {store:"Panera Bread",item:"Bread Surprise Bag",percent:"-60%",now:"$5.99",was:"$14.99",expires:"Closes in 47 min",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80"},
+  {store:"Pizza Hut",item:"End-of-Day Pizza Box",percent:"-70%",now:"$4.99",was:"$16.99",expires:"Closes in 1h 22m",img:"https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80"},
+  {store:"Nothing Bundt Cakes",item:"Bundtlet Bag",percent:"-65%",now:"$6.49",was:"$18.00",expires:"Closes in 2h",img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80"},
+  {store:"H Mart",item:"Sushi Surplus Box",percent:"-50%",now:"$8.99",was:"$18.99",expires:"Closes in 3h",img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80"},
+  {store:"Whole Foods Market",item:"Prepared Foods Box",percent:"-55%",now:"$9.99",was:"$22.00",expires:"Closes in 4h",img:"https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80"},
+  {store:"Sprouts FM",item:"Artisan Bread Bag",percent:"-45%",now:"$3.49",was:"$6.49",expires:"Closes in 5h",img:"https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=400&q=80"},
+];
+
+// ── RENDER STORES ─────────────────────────────────────────
+function renderStores(filter = 'all') {
+  const grid = document.getElementById('storesGrid');
+  const filtered = filter === 'all' ? STORES : STORES.filter(s => s.category === filter);
+  grid.innerHTML = filtered.map((s, i) => `
+    <div class="store-card" onclick="openModal(${s.id})" style="animation-delay:${i*0.06}s">
+      <div class="store-img-wrap">
+        <img src="${s.img}" alt="${s.name}" loading="lazy" />
+        <div class="store-badge-discount">${s.discount} OFF</div>
+        ${s.urgent ? '<div class="store-badge-urgent">⚡ Closes Soon</div>' : ''}
+      </div>
+      <div class="store-info">
+        <div class="store-time">🕐 Pickup: ${s.time}</div>
+        <div class="store-name">${s.name}</div>
+        <div class="store-meta">
+          <div class="store-meta-item"><span class="star">★</span> ${s.rating}</div>
+          <div class="store-meta-dot"></div>
+          <div class="store-meta-item">📍 ${s.distance}</div>
+          <div class="store-meta-dot"></div>
+          <div class="store-meta-item">${s.address.split(',')[1]?.trim() || 'Fayetteville'}</div>
+        </div>
+        <div class="store-tags">
+          ${s.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+        <div class="store-footer">
+          <div class="store-price-info">
+            <div class="store-price-label">Starts from</div>
+            <div class="store-price-val">${s.items[0].now}</div>
+            <div class="store-price-orig">was ${s.items[0].was}</div>
           </div>
-          <div class="card-meta">${item.description}</div>
-          <div class="price">$${item.price.toFixed(2)}</div>
-        `;
+          <button class="store-cta">View Deals</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
 
-        cardsContainer.appendChild(card);
-      });
-    }
+// ── RENDER DEALS ──────────────────────────────────────────
+function renderDeals() {
+  const scroll = document.getElementById('featuredScroll');
+  scroll.innerHTML = DEALS.map(d => `
+    <div class="deal-card">
+      <div class="deal-img">
+        <img src="${d.img}" alt="${d.item}" loading="lazy" />
+        <div class="deal-discount-overlay"></div>
+        <div class="deal-percent">${d.percent}</div>
+      </div>
+      <div class="deal-body">
+        <div class="deal-store">${d.store}</div>
+        <div class="deal-item">${d.item}</div>
+        <div class="deal-prices">
+          <div class="deal-now">${d.now}</div>
+          <div class="deal-was">${d.was}</div>
+        </div>
+        <div class="deal-expires">⏱ <span>${d.expires}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
 
-    searchInput.addEventListener("input", renderUserCards);
-    categoryFilter.addEventListener("change", renderUserCards);
-    locationFilter.addEventListener("change", renderUserCards);
-    availabilityFilter.addEventListener("change", renderUserCards);
+// ── MODAL ─────────────────────────────────────────────────
+let currentStore = null;
+function openModal(id) {
+  const s = STORES.find(x => x.id === id);
+  if (!s) return;
+  currentStore = s;
+  document.getElementById('modalImg').src = s.img;
+  document.getElementById('modalImg').alt = s.name;
+  document.getElementById('modalName').textContent = s.name;
+  document.getElementById('modalAddress').innerHTML = `📍 ${s.address} &nbsp;·&nbsp; ${s.distance} away`;
+  document.getElementById('modalTags').innerHTML = s.tags.map(t => `<span class="tag">${t}</span>`).join('');
+  document.getElementById('modalItems').innerHTML = s.items.map(item => `
+    <div class="modal-item">
+      <div>
+        <div class="modal-item-name">${item.name}</div>
+        <div class="modal-item-qty">${item.qty}</div>
+      </div>
+      <div class="modal-item-prices">
+        <div class="modal-item-now">${item.now}</div>
+        <div class="modal-item-was">was ${item.was}</div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOnOverlay(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
 
-    // Admin table
-    const adminTableBody = document.getElementById("adminTableBody");
+// ── TOAST ─────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+function claimBag() {
+  closeModal();
+  setTimeout(() => showToast(`Deal claimed at ${currentStore?.name}! Head to the store during pickup window.`), 300);
+}
 
-    function renderAdminTable() {
-      adminTableBody.innerHTML = "";
-      items.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.category}</td>
-          <td>${item.location}</td>
-          <td>$${item.price.toFixed(2)}</td>
-          <td>${item.available ? "Yes" : "No"}</td>
-          <td class="admin-actions">
-            <button class="btn-ghost" data-edit="${item.id}">Edit</button>
-            <button class="btn-small" data-toggle="${item.id}">
-              ${item.available ? "Mark unavailable" : "Mark available"}
-            </button>
-            <button class="btn-danger" data-delete="${item.id}">Delete</button>
-          </td>
-        `;
-        adminTableBody.appendChild(tr);
-      });
+// ── FILTER ────────────────────────────────────────────────
+function filterCategory(el, cat) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderStores(cat);
+}
+function filterCat(el, cat) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderStores(cat);
+}
 
-      adminTableBody.querySelectorAll("[data-edit]").forEach(btn => {
-        btn.addEventListener("click", () => startEdit(parseInt(btn.dataset.edit, 10)));
-      });
-      adminTableBody.querySelectorAll("[data-toggle]").forEach(btn => {
-        btn.addEventListener("click", () => toggleAvailability(parseInt(btn.dataset.toggle, 10)));
-      });
-      adminTableBody.querySelectorAll("[data-delete]").forEach(btn => {
-        btn.addEventListener("click", () => deleteItem(parseInt(btn.dataset.delete, 10)));
-      });
-    }
+// ── SEARCH ────────────────────────────────────────────────
+function handleSearch() {
+  const val = document.getElementById('heroSearch').value.toLowerCase();
+  document.getElementById('stores').scrollIntoView({ behavior: 'smooth' });
+  const grid = document.getElementById('storesGrid');
+  const filtered = val ? STORES.filter(s =>
+    s.name.toLowerCase().includes(val) ||
+    s.category.toLowerCase().includes(val) ||
+    s.tags.some(t => t.toLowerCase().includes(val))
+  ) : STORES;
+  renderStores('all');
+  if (val) {
+    grid.innerHTML = filtered.map((s, i) => `
+      <div class="store-card" onclick="openModal(${s.id})" style="animation-delay:${i*0.06}s">
+        <div class="store-img-wrap">
+          <img src="${s.img}" alt="${s.name}" loading="lazy" />
+          <div class="store-badge-discount">${s.discount} OFF</div>
+          ${s.urgent ? '<div class="store-badge-urgent">⚡ Closes Soon</div>' : ''}
+        </div>
+        <div class="store-info">
+          <div class="store-time">🕐 Pickup: ${s.time}</div>
+          <div class="store-name">${s.name}</div>
+          <div class="store-meta">
+            <div class="store-meta-item"><span class="star">★</span> ${s.rating}</div>
+            <div class="store-meta-dot"></div>
+            <div class="store-meta-item">📍 ${s.distance}</div>
+          </div>
+          <div class="store-tags">${s.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          <div class="store-footer">
+            <div class="store-price-info">
+              <div class="store-price-label">Starts from</div>
+              <div class="store-price-val">${s.items[0].now}</div>
+              <div class="store-price-orig">was ${s.items[0].was}</div>
+            </div>
+            <button class="store-cta">View Deals</button>
+          </div>
+        </div>
+      </div>
+    `).join('') || '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px 0">No stores found. Try a different search.</div>';
+  }
+}
 
-    function toggleAvailability(id) {
-      items = items.map(item =>
-        item.id === id ? { ...item, available: !item.available } : item
-      );
-      renderAdminTable();
-      renderUserCards();
-    }
+// ── SCROLL ────────────────────────────────────────────────
+function scrollTo(sel) {
+  document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' });
+}
 
-    function deleteItem(id) {
-      items = items.filter(item => item.id !== id);
-      renderAdminTable();
-      renderUserCards();
-      resetForm();
-    }
+// ── SCROLL REVEAL ─────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Admin form
-    const formTitle = document.getElementById("formTitle");
-    const formName = document.getElementById("formName");
-    const formDescription = document.getElementById("formDescription");
-    const formCategory = document.getElementById("formCategory");
-    const formLocation = document.getElementById("formLocation");
-    const formPrice = document.getElementById("formPrice");
-    const formAvailable = document.getElementById("formAvailable");
-    const saveItemBtn = document.getElementById("saveItemBtn");
+// ── NAV SCROLL SHADOW ─────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
 
-    function resetForm() {
-      editingId = null;
-      formTitle.textContent = "Add / Edit item";
-      formName.value = "";
-      formDescription.value = "";
-      formCategory.value = "Fast Food";
-      formLocation.value = "Downtown";
-      formPrice.value = "";
-      formAvailable.value = "true";
-    }
+// ── ENTER KEY SEARCH ──────────────────────────────────────
+document.getElementById('heroSearch').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSearch();
+});
 
-    function startEdit(id) {
-      const item = items.find(i => i.id === id);
-      if (!item) return;
-      editingId = id;
-      formTitle.textContent = "Editing: " + item.name;
-      formName.value = item.name;
-      formDescription.value = item.description;
-      formCategory.value = item.category;
-      formLocation.value = item.location;
-      formPrice.value = item.price;
-      formAvailable.value = item.available ? "true" : "false";
-    }
-
-    saveItemBtn.addEventListener("click", () => {
-      const name = formName.value.trim();
-      const description = formDescription.value.trim();
-      const category = formCategory.value;
-      const location = formLocation.value;
-      const price = parseFloat(formPrice.value || "0");
-      const available = formAvailable.value === "true";
-
-      if (!name || !description || !price) {
-        alert("Please fill in name, description, and price.");
-        return;
-      }
-
-      if (editingId) {
-        items = items.map(item =>
-          item.id === editingId
-            ? { ...item, name, description, category, location, price, available }
-            : item
-        );
-      } else {
-        const newId = items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
-        items.push({ id: newId, name, description, category, location, price, available });
-      }
-
-      renderAdminTable();
-      renderUserCards();
-      resetForm();
-    });
-
-    // Initial render
-    renderUserCards();
-  </script>
+// ── INIT ──────────────────────────────────────────────────
+renderStores();
+renderDeals();
+</script>
 </body>
 </html>
