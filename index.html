@@ -9,27 +9,65 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <style>
-body { font-family: Arial; margin:0; background:#f5f7f9; }
+body {
+    font-family: Arial;
+    margin:0;
+    background:#f5f7f9;
+}
 
+/* Header */
 .header {
     background:#16a34a;
     color:white;
     padding:15px;
     text-align:center;
+    font-size:20px;
 }
 
+/* Layout */
 .container { padding:15px; }
 
-.hidden { display:none; }
-
-.card {
+/* Store Cards (DoorDash style) */
+.store-card {
     background:white;
-    padding:12px;
-    margin-top:10px;
-    border-radius:10px;
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:15px;
     box-shadow:0 3px 8px rgba(0,0,0,0.08);
 }
 
+.store-card img {
+    width:100%;
+    height:140px;
+    object-fit:cover;
+}
+
+.store-content {
+    padding:10px;
+}
+
+/* Items */
+.item-card {
+    display:flex;
+    background:white;
+    border-radius:10px;
+    margin-top:10px;
+    overflow:hidden;
+    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+}
+
+.item-card img {
+    width:100px;
+    height:100px;
+    object-fit:cover;
+}
+
+.item-info {
+    padding:10px;
+    flex:1;
+}
+
+/* Buttons */
 button {
     width:100%;
     padding:10px;
@@ -40,17 +78,17 @@ button {
     border-radius:8px;
 }
 
-input {
-    width:100%;
-    padding:10px;
-    margin-top:8px;
-    border-radius:8px;
-    border:1px solid #ddd;
-}
-
+/* Nav */
 .nav button {
     width:auto;
     margin-right:5px;
+}
+
+/* Map */
+#map {
+    height:250px;
+    margin-top:15px;
+    border-radius:10px;
 }
 </style>
 </head>
@@ -62,46 +100,42 @@ input {
 <div class="container">
 
 <div class="nav">
-    <button onclick="showView('user')">User View</button>
-    <button onclick="showView('admin')">Admin Dashboard</button>
+    <button onclick="showView('user')">User</button>
+    <button onclick="showView('admin')">Admin</button>
 </div>
 
 <!-- USER VIEW -->
 <div id="userView">
 
-    <h3>Stores</h3>
+    <h3>Stores Near You</h3>
     <div id="stores"></div>
 
     <h3>Cart</h3>
     <div id="cart"></div>
     <button onclick="checkout()">Checkout</button>
 
-    <div id="map" style="height:300px;margin-top:15px;"></div>
+    <div id="map"></div>
 
 </div>
 
-<!-- ADMIN VIEW -->
+<!-- ADMIN -->
 <div id="adminView" class="hidden">
 
     <h3>Admin Dashboard</h3>
 
-    <div class="card">
-        <h4>Add Store</h4>
-        <input id="storeName" placeholder="Store Name">
-        <button onclick="addStore()">Add Store</button>
-    </div>
+    <input id="storeName" placeholder="Store Name">
+    <input id="storeImage" placeholder="Store Image URL">
+    <button onclick="addStore()">Add Store</button>
 
-    <div class="card">
-        <h4>Orders</h4>
-        <div id="orders"></div>
-    </div>
+    <h4>Orders</h4>
+    <div id="orders"></div>
 
 </div>
 
 </div>
 
 <script>
-/* FIREBASE CONFIG */
+/* FIREBASE */
 const firebaseConfig = {
     apiKey: "YOUR_KEY",
     authDomain: "YOUR_DOMAIN",
@@ -111,76 +145,111 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* STATE */
+/* DATA */
 let cart = [];
+
+let stores = [
+    {
+        name: "Walmart",
+        image: "https://images.unsplash.com/photo-1604719312566-8912e9c1b4c5"
+    },
+    {
+        name: "Target",
+        image: "https://images.unsplash.com/photo-1580913428735-bd3c269d7b06"
+    }
+];
 
 /* NAV */
 function showView(view) {
     document.getElementById("userView").classList.add("hidden");
     document.getElementById("adminView").classList.add("hidden");
 
-    if (view === "user") {
-        document.getElementById("userView").classList.remove("hidden");
-    } else {
-        document.getElementById("adminView").classList.remove("hidden");
-    }
+    document.getElementById(view + "View").classList.remove("hidden");
 }
 
-/* STORES */
-let stores = [
-    { name: "Walmart" },
-    { name: "Target" }
-];
-
+/* LOAD STORES */
 function loadStores() {
     const div = document.getElementById("stores");
     div.innerHTML = "";
 
     stores.forEach(store => {
         const el = document.createElement("div");
-        el.className = "card";
+        el.className = "store-card";
+
         el.innerHTML = `
-            <h4>${store.name}</h4>
-            <button onclick="addToCart('${store.name}')">Add Item</button>
+            <img src="${store.image}">
+            <div class="store-content">
+                <h4>${store.name}</h4>
+                <button onclick="openStore('${store.name}')">View Items</button>
+            </div>
         `;
         div.appendChild(el);
     });
 }
 
+/* OPEN STORE */
+function openStore(name) {
+    const div = document.getElementById("stores");
+
+    div.innerHTML = `
+        <h3>${name}</h3>
+
+        <div class="item-card">
+            <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec">
+            <div class="item-info">
+                <b>Bakery Bread</b>
+                <p>$5 → $2</p>
+                <button onclick="addToCart('Bakery Bread')">Add</button>
+            </div>
+        </div>
+
+        <div class="item-card">
+            <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d">
+            <div class="item-info">
+                <b>Deli Meal</b>
+                <p>$9 → $4</p>
+                <button onclick="addToCart('Deli Meal')">Add</button>
+            </div>
+        </div>
+
+        <button onclick="loadStores()">Back</button>
+    `;
+}
+
 /* CART */
-function addToCart(store) {
-    cart.push({ store, item: "Sample Item" });
+function addToCart(item) {
+    cart.push(item);
     renderCart();
 }
 
 function renderCart() {
-    const div = document.getElementById("cart");
-    div.innerHTML = cart.map(c => `${c.store} - ${c.item}`).join("<br>");
+    document.getElementById("cart").innerHTML =
+        cart.map(i => `<div>${i}</div>`).join("");
 }
 
 /* CHECKOUT */
 function checkout() {
-    const order = {
+    db.collection("orders").add({
         items: cart,
         created: new Date()
-    };
+    });
 
-    db.collection("orders").add(order);
     alert("Order placed!");
-
     cart = [];
     renderCart();
 }
 
-/* ADMIN - ADD STORE */
+/* ADMIN */
 function addStore() {
-    const name = storeName.value;
-    stores.push({ name });
+    stores.push({
+        name: storeName.value,
+        image: storeImage.value
+    });
+
     loadStores();
-    storeName.value = "";
 }
 
-/* ADMIN - LOAD ORDERS */
+/* LOAD ORDERS */
 function loadOrders() {
     const div = document.getElementById("orders");
 
@@ -188,12 +257,9 @@ function loadOrders() {
         div.innerHTML = "";
         snapshot.forEach(doc => {
             const o = doc.data();
-            const el = document.createElement("div");
-            el.className = "card";
-            el.innerHTML = `
-                <p><b>Items:</b> ${JSON.stringify(o.items)}</p>
-            `;
-            div.appendChild(el);
+            div.innerHTML += `<div class="store-card">
+                ${JSON.stringify(o.items)}
+            </div>`;
         });
     });
 }
@@ -222,7 +288,6 @@ function initMap() {
 loadStores();
 loadOrders();
 initMap();
-
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
