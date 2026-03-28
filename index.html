@@ -651,6 +651,187 @@
     .hero-stats { gap: 20px; }
   }
 
+  /* ─── PARTNER & ADMIN TABS ─── */
+  .p-tab {
+    background: none; border: none; font-family: var(--font-body);
+    font-size: 14px; font-weight: 600; color: var(--text-muted);
+    padding: 14px 20px; cursor: pointer; border-bottom: 3px solid transparent;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .p-tab:hover { color: var(--g1); }
+  .p-tab.active { color: var(--g1); border-bottom-color: var(--g1); }
+
+  /* ─── PARTNER KPI ─── */
+  .partner-kpi-grid { }
+  .p-kpi-card {
+    background: #fff; border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .p-kpi-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .p-kpi-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 12px;
+  }
+  .p-kpi-val { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--text-main); }
+  .p-kpi-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .p-kpi-delta { font-size: 12px; font-weight: 600; margin-top: 6px; }
+  .p-up { color: var(--g1); }
+  .p-neutral { color: var(--text-muted); }
+
+  /* ─── PARTNER CARDS ─── */
+  .p-card {
+    background: #fff; border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+  }
+  .p-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-display); font-size: 16px; font-weight: 700;
+  }
+  .p-card-badge {
+    background: var(--off-white); color: var(--text-muted);
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 99px;
+    border: 1px solid var(--border);
+  }
+  .p-link {
+    background: none; border: none; color: var(--g1);
+    font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+
+  /* ─── BARS ─── */
+  .bar-col {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 6px; height: 100%; justify-content: flex-end;
+  }
+  .bar-fill {
+    width: 100%; border-radius: 6px 6px 0 0;
+    transition: height 0.5s cubic-bezier(.22,1,.36,1);
+  }
+  .bar-day { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .bar-val { font-size: 10px; color: var(--text-muted); }
+
+  /* ─── CLAIM ROWS ─── */
+  .p-claim-row { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+  .p-claim-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .p-claim-dot.green { background: var(--g1); }
+  .p-claim-dot.orange { background: #ff8c42; }
+  .p-claim-name { font-weight: 600; color: var(--text-main); }
+  .p-claim-time { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .p-claim-price { margin-left: auto; font-family: var(--font-display); font-weight: 700; color: var(--g1); }
+
+  /* ─── TABLE ─── */
+  .p-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .p-table th { text-align: left; font-weight: 600; color: var(--text-muted); font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .p-table td { padding: 13px 12px; border-bottom: 1px solid #f0f5f2; color: var(--text-main); }
+  .p-table tr:last-child td { border-bottom: none; }
+  .p-table tr:hover td { background: #f9fcfb; }
+  .p-status { display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 99px; }
+  .p-status.green { background: #e6f7ed; color: var(--g3); }
+  .p-status.orange { background: #fff3e6; color: #d9730d; }
+  .p-status.red { background: #fde8e8; color: #c0392b; }
+  .p-status.blue { background: #e8f4ff; color: #1a6fb4; }
+
+  /* ─── LISTING ROW ─── */
+  .p-listing-row {
+    background: #fff; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border); padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px;
+    transition: border-color 0.2s;
+  }
+  .p-listing-row:hover { border-color: var(--g1); }
+  .p-listing-emoji { font-size: 28px; width: 48px; height: 48px; background: var(--off-white); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .p-listing-info { flex: 1; }
+  .p-listing-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; }
+  .p-listing-meta { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .p-listing-prices { text-align: right; }
+  .p-listing-now { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--g1); }
+  .p-listing-was { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
+  .p-listing-actions { display: flex; gap: 8px; }
+  .p-btn-sm {
+    font-size: 13px; font-weight: 600; padding: 8px 14px;
+    border-radius: 8px; border: 1.5px solid var(--border);
+    background: #fff; color: var(--text-sub); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .p-btn-sm:hover { border-color: var(--g1); color: var(--g1); }
+  .p-btn-sm.danger:hover { border-color: #e74c3c; color: #e74c3c; }
+
+  /* ─── ANALYTICS BARS ─── */
+  .p-analytics-row { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+  .p-analytics-name { width: 170px; color: var(--text-sub); font-weight: 500; flex-shrink: 0; }
+  .p-analytics-bar-wrap { flex: 1; height: 10px; background: var(--off-white); border-radius: 99px; overflow: hidden; }
+  .p-analytics-bar { height: 100%; border-radius: 99px; background: var(--g1); transition: width 1s cubic-bezier(.22,1,.36,1); }
+  .p-analytics-val { font-family: var(--font-display); font-weight: 700; color: var(--text-main); width: 80px; text-align: right; }
+
+  /* ─── FORM FIELDS ─── */
+  .p-field { display: flex; flex-direction: column; gap: 6px; }
+  .p-field label { font-size: 13px; font-weight: 600; color: var(--text-sub); }
+  .p-input {
+    width: 100%; font-family: var(--font-body); font-size: 14px;
+    padding: 11px 14px; border-radius: 10px;
+    border: 1.5px solid var(--border); outline: none;
+    background: var(--off-white); color: var(--text-main);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .p-input:focus { border-color: var(--g1); background: #fff; }
+  .p-toggle-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+
+  /* ─── ADMIN SIDEBAR ─── */
+  .admin-sidebar {
+    width: 220px; background: #0d1f15; flex-shrink: 0;
+    padding: 24px 0; display: flex; flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .admin-sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 16px;
+  }
+  .admin-nav { display: flex; flex-direction: column; padding: 0 12px; }
+  .admin-nav-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.25); padding: 6px 8px 4px; }
+  .a-nav-btn {
+    background: none; border: none; font-family: var(--font-body); font-size: 14px; font-weight: 500;
+    color: rgba(255,255,255,0.55); padding: 10px 12px; border-radius: 10px;
+    text-align: left; cursor: pointer; transition: all 0.2s; margin-bottom: 2px;
+  }
+  .a-nav-btn:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .a-nav-btn.active { background: var(--g1); color: #fff; font-weight: 600; }
+
+  /* ─── ADMIN KPIs ─── */
+  .a-kpi {
+    background: #fff; border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    transition: transform 0.2s;
+  }
+  .a-kpi:hover { transform: translateY(-2px); }
+  .a-kpi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
+  .a-kpi-num { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--text-main); }
+  .a-kpi-lab { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .a-kpi-d { font-size: 12px; font-weight: 600; margin-top: 6px; }
+  .a-up { color: var(--g1); }
+
+  /* ─── ACTIVITY ─── */
+  .a-activity { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text-sub); }
+  .a-act-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .a-act-time { margin-left: auto; font-size: 12px; color: var(--text-muted); white-space: nowrap; padding-left: 8px; }
+
+  /* ─── ADMIN ACTION BTN ─── */
+  .a-action-btn { font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; transition: all 0.2s; }
+  .a-action-btn:hover { border-color: var(--g1); color: var(--g1); }
+
+  /* ─── RESPONSIVE DASHBOARDS ─── */
+  @media(max-width:900px) {
+    .partner-kpi-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .admin-kpi-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .partner-two-col { grid-template-columns: 1fr !important; }
+    .admin-sidebar { width: 60px; }
+    .admin-sidebar-logo div:last-child, .admin-nav-label, .a-nav-btn { display: none; }
+    .a-nav-btn { display: flex; justify-content: center; }
+  }
+
   /* scroll-reveal */
   .reveal {
     opacity: 0; transform: translateY(32px);
@@ -672,15 +853,21 @@
       </div>
     </div>
     <ul class="nav-links">
-      <li><a href="#stores">Stores</a></li>
-      <li><a href="#deals">Deals</a></li>
-      <li><a href="#map">Near Me</a></li>
-      <li><a href="#how">How It Works</a></li>
-      <li><a href="#impact">Impact</a></li>
+      <li><a href="#" onclick="showPage('main');return false;">Stores</a></li>
+      <li><a href="#deals" onclick="showPage('main');return false;">Deals</a></li>
+      <li><a href="#map" onclick="showPage('main');return false;">Near Me</a></li>
+      <li><a href="#how" onclick="showPage('main');return false;">How It Works</a></li>
+      <li><a href="#" onclick="showPage('partner');return false;" style="color:var(--g1);font-weight:600;">Partner Portal</a></li>
+      <li><a href="#" onclick="showPage('admin');return false;" style="color:#e05a00;font-weight:600;">Admin</a></li>
     </ul>
-    <button class="nav-cta">Find Food Now →</button>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="nav-cta" onclick="showPage('main')">Find Food Now →</button>
+    </div>
   </div>
 </nav>
+
+<!-- ══════════════ PAGE WRAPPER ══════════════ -->
+<div id="page-main">
 
 <!-- ══════════════ HERO ══════════════ -->
 <section class="hero" id="home">
@@ -959,6 +1146,378 @@
   </div>
 </footer>
 
+</div><!-- end #page-main -->
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PARTNER DASHBOARD PAGE                                     -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="page-partner" style="display:none; padding-top:var(--nav-h); min-height:100vh; background:var(--off-white);">
+
+  <!-- Partner Top Bar -->
+  <div style="background:#fff; border-bottom:1px solid var(--border); padding:0;">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; padding-top:20px; padding-bottom:20px; flex-wrap:wrap; gap:12px;">
+      <div>
+        <div style="font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--text-main);">🏪 Partner Dashboard</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:3px;">Panera Bread · Fayetteville, NC · <span style="color:var(--g1);font-weight:600;">● Active</span></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button onclick="openAddListing()" style="background:var(--g1);color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:12px;border:none;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='var(--g3)'" onmouseout="this.style.background='var(--g1)'">+ Add New Listing</button>
+        <button onclick="showPage('main')" style="background:var(--off-white);color:var(--text-sub);font-weight:600;font-size:14px;padding:11px 22px;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;">← Back to App</button>
+      </div>
+    </div>
+    <!-- Partner Sub Nav -->
+    <div class="container" style="display:flex;gap:0;border-top:1px solid var(--border);overflow-x:auto;">
+      <button class="p-tab active" onclick="switchPartnerTab(this,'overview')" data-tab="overview">Overview</button>
+      <button class="p-tab" onclick="switchPartnerTab(this,'listings')" data-tab="listings">My Listings</button>
+      <button class="p-tab" onclick="switchPartnerTab(this,'orders')" data-tab="orders">Claims & Pickups</button>
+      <button class="p-tab" onclick="switchPartnerTab(this,'analytics')" data-tab="analytics">Analytics</button>
+      <button class="p-tab" onclick="switchPartnerTab(this,'settings')" data-tab="settings">Settings</button>
+    </div>
+  </div>
+
+  <!-- Partner Content Area -->
+  <div class="container" style="padding-top:32px; padding-bottom:60px;">
+
+    <!-- TAB: OVERVIEW -->
+    <div id="ptab-overview">
+      <!-- KPI Row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px;" class="partner-kpi-grid">
+        <div class="p-kpi-card">
+          <div class="p-kpi-icon" style="background:#e6f7ed;">💰</div>
+          <div class="p-kpi-val">$1,284</div>
+          <div class="p-kpi-label">Revenue This Month</div>
+          <div class="p-kpi-delta p-up">↑ 18% vs last month</div>
+        </div>
+        <div class="p-kpi-card">
+          <div class="p-kpi-icon" style="background:#fff3e6;">🛍️</div>
+          <div class="p-kpi-val">247</div>
+          <div class="p-kpi-label">Bags Claimed</div>
+          <div class="p-kpi-delta p-up">↑ 31 this week</div>
+        </div>
+        <div class="p-kpi-card">
+          <div class="p-kpi-icon" style="background:#e8f4ff;">♻️</div>
+          <div class="p-kpi-val">386 lbs</div>
+          <div class="p-kpi-label">Food Rescued</div>
+          <div class="p-kpi-delta p-up">↑ 12% vs last month</div>
+        </div>
+        <div class="p-kpi-card">
+          <div class="p-kpi-icon" style="background:#fde8f4;">⭐</div>
+          <div class="p-kpi-val">4.7</div>
+          <div class="p-kpi-label">Avg. Rating</div>
+          <div class="p-kpi-delta p-neutral">→ Stable</div>
+        </div>
+      </div>
+
+      <!-- Two-col: Chart + Recent Claims -->
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-bottom:28px;" class="partner-two-col">
+        <!-- Mini bar chart -->
+        <div class="p-card">
+          <div class="p-card-head"><span>Weekly Claims</span><span class="p-card-badge">Last 7 Days</span></div>
+          <div style="display:flex;align-items:flex-end;gap:10px;height:140px;margin-top:20px;padding-bottom:8px;">
+            <div class="bar-col"><div class="bar-fill" style="height:55%;background:var(--g2);"></div><div class="bar-day">Mon</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:70%;background:var(--g1);"></div><div class="bar-day">Tue</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:45%;background:var(--g2);"></div><div class="bar-day">Wed</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:90%;background:var(--g1);"></div><div class="bar-day">Thu</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:80%;background:var(--g2);"></div><div class="bar-day">Fri</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:100%;background:var(--g1);"></div><div class="bar-day">Sat</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:65%;background:var(--g2);"></div><div class="bar-day">Sun</div></div>
+          </div>
+        </div>
+        <!-- Recent Claims -->
+        <div class="p-card">
+          <div class="p-card-head"><span>Recent Claims</span><span class="p-card-badge">Today</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+            <div class="p-claim-row"><div class="p-claim-dot green"></div><div><div class="p-claim-name">Bread Surprise Bag</div><div class="p-claim-time">2:14 PM · Picked up ✓</div></div><div class="p-claim-price">$5.99</div></div>
+            <div class="p-claim-row"><div class="p-claim-dot green"></div><div><div class="p-claim-name">Pastry Bundle ×2</div><div class="p-claim-time">1:42 PM · Picked up ✓</div></div><div class="p-claim-price">$15.98</div></div>
+            <div class="p-claim-row"><div class="p-claim-dot orange"></div><div><div class="p-claim-name">Bread Surprise Bag</div><div class="p-claim-time">3:00 PM · Pending</div></div><div class="p-claim-price">$5.99</div></div>
+            <div class="p-claim-row"><div class="p-claim-dot orange"></div><div><div class="p-claim-name">Pastry Bundle</div><div class="p-claim-time">3:30 PM · Pending</div></div><div class="p-claim-price">$7.99</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Listings Quick View -->
+      <div class="p-card">
+        <div class="p-card-head"><span>Active Listings Today</span><button onclick="switchPartnerTab(document.querySelector('[data-tab=listings]'),'listings')" class="p-link">Manage all →</button></div>
+        <div id="partnerListingsPreview" style="margin-top:16px;"></div>
+      </div>
+    </div>
+
+    <!-- TAB: LISTINGS -->
+    <div id="ptab-listings" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;">My Listings</div>
+        <button onclick="openAddListing()" style="background:var(--g1);color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:12px;border:none;cursor:pointer;">+ Add Listing</button>
+      </div>
+      <div id="partnerListingsFull" style="display:flex;flex-direction:column;gap:14px;"></div>
+    </div>
+
+    <!-- TAB: ORDERS -->
+    <div id="ptab-orders" style="display:none;">
+      <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:24px;">Claims & Pickups</div>
+      <div class="p-card" style="overflow-x:auto;">
+        <table class="p-table">
+          <thead><tr><th>Item</th><th>Customer</th><th>Claimed At</th><th>Pickup Window</th><th>Status</th><th>Amount</th></tr></thead>
+          <tbody>
+            <tr><td>Bread Surprise Bag</td><td>M. Johnson</td><td>2:14 PM</td><td>3:00–5:00 PM</td><td><span class="p-status green">Picked Up</span></td><td>$5.99</td></tr>
+            <tr><td>Pastry Bundle ×2</td><td>R. Thompson</td><td>1:42 PM</td><td>3:00–5:00 PM</td><td><span class="p-status green">Picked Up</span></td><td>$15.98</td></tr>
+            <tr><td>Bread Surprise Bag</td><td>A. Williams</td><td>2:50 PM</td><td>3:00–5:00 PM</td><td><span class="p-status orange">Pending</span></td><td>$5.99</td></tr>
+            <tr><td>Pastry Bundle</td><td>K. Davis</td><td>3:05 PM</td><td>3:00–5:00 PM</td><td><span class="p-status orange">Pending</span></td><td>$7.99</td></tr>
+            <tr><td>Bread Surprise Bag</td><td>T. Brown</td><td>Yesterday</td><td>3:00–5:00 PM</td><td><span class="p-status green">Picked Up</span></td><td>$5.99</td></tr>
+            <tr><td>Pastry Bundle</td><td>L. Martinez</td><td>Yesterday</td><td>3:00–5:00 PM</td><td><span class="p-status red">No-Show</span></td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: ANALYTICS -->
+    <div id="ptab-analytics" style="display:none;">
+      <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:24px;">Analytics</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;" class="partner-kpi-grid">
+        <div class="p-kpi-card"><div class="p-kpi-icon" style="background:#e6f7ed;">📈</div><div class="p-kpi-val">$4,820</div><div class="p-kpi-label">Total Revenue (YTD)</div><div class="p-kpi-delta p-up">↑ 24% vs last year</div></div>
+        <div class="p-kpi-card"><div class="p-kpi-icon" style="background:#fff3e6;">🛍️</div><div class="p-kpi-val">891</div><div class="p-kpi-label">Total Bags Sold (YTD)</div><div class="p-kpi-delta p-up">↑ 312 vs last year</div></div>
+        <div class="p-kpi-card"><div class="p-kpi-icon" style="background:#fde8f4;">🔄</div><div class="p-kpi-val">94%</div><div class="p-kpi-label">Pickup Rate</div><div class="p-kpi-delta p-up">↑ 3% vs last month</div></div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-head"><span>Top Performing Items</span></div>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">
+          <div class="p-analytics-row"><div class="p-analytics-name">🥖 Bread Surprise Bag</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:88%"></div></div><div class="p-analytics-val">412 sold</div></div>
+          <div class="p-analytics-row"><div class="p-analytics-name">🥐 Pastry Bundle</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:62%"></div></div><div class="p-analytics-val">289 sold</div></div>
+          <div class="p-analytics-row"><div class="p-analytics-name">🍞 Sourdough Rescue</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:41%"></div></div><div class="p-analytics-val">190 sold</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: SETTINGS -->
+    <div id="ptab-settings" style="display:none;">
+      <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:24px;">Store Settings</div>
+      <div class="p-card" style="max-width:620px;">
+        <div class="p-card-head"><span>Store Information</span></div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:20px;">
+          <div class="p-field"><label>Store Name</label><input type="text" value="Panera Bread" class="p-input"/></div>
+          <div class="p-field"><label>Address</label><input type="text" value="3215 Raeford Rd, Fayetteville, NC 28303" class="p-input"/></div>
+          <div class="p-field"><label>Pickup Window</label><input type="text" value="3:00 PM – 5:00 PM" class="p-input"/></div>
+          <div class="p-field"><label>Store Category</label>
+            <select class="p-input"><option>Bakery</option><option>Grocery</option><option>Restaurant</option><option>Deli</option><option>Produce</option></select>
+          </div>
+          <div class="p-field"><label>Store Status</label>
+            <div style="display:flex;gap:12px;margin-top:6px;">
+              <label class="p-toggle-label"><input type="radio" name="status" checked /> <span>🟢 Active — Accepting Claims</span></label>
+              <label class="p-toggle-label"><input type="radio" name="status" /> <span>🔴 Paused</span></label>
+            </div>
+          </div>
+          <button onclick="showToast('Settings saved successfully!')" style="background:var(--g1);color:#fff;font-weight:700;font-size:15px;padding:14px 28px;border-radius:12px;border:none;cursor:pointer;align-self:flex-start;">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- ADMIN DASHBOARD PAGE                                       -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="page-admin" style="display:none; padding-top:var(--nav-h); min-height:100vh; background:#0d1f15;">
+
+  <!-- Admin Sidebar + Content Layout -->
+  <div style="display:flex; min-height:calc(100vh - var(--nav-h));">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-logo">
+        <div style="font-size:22px;">🍀</div>
+        <div>
+          <div style="font-family:var(--font-display);font-weight:800;color:#fff;font-size:14px;">A2E Admin</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);">Control Center</div>
+        </div>
+      </div>
+      <nav class="admin-nav">
+        <div class="admin-nav-label">Platform</div>
+        <button class="a-nav-btn active" onclick="switchAdminTab(this,'overview')" data-tab="overview">📊 Overview</button>
+        <button class="a-nav-btn" onclick="switchAdminTab(this,'stores')" data-tab="stores">🏪 Manage Stores</button>
+        <button class="a-nav-btn" onclick="switchAdminTab(this,'listings')" data-tab="listings">📋 All Listings</button>
+        <button class="a-nav-btn" onclick="switchAdminTab(this,'users')" data-tab="users">👥 Users</button>
+        <div class="admin-nav-label" style="margin-top:20px;">Reports</div>
+        <button class="a-nav-btn" onclick="switchAdminTab(this,'impact')" data-tab="impact">🌍 Impact Report</button>
+        <button class="a-nav-btn" onclick="switchAdminTab(this,'revenue')" data-tab="revenue">💰 Revenue</button>
+        <div class="admin-nav-label" style="margin-top:20px;">System</div>
+        <button class="a-nav-btn" onclick="showPage('main')" style="color:rgba(255,255,255,0.4);">← Back to App</button>
+      </nav>
+    </aside>
+
+    <!-- Main Admin Content -->
+    <main style="flex:1; padding:32px; overflow-y:auto; background:#f0f7f3;">
+
+      <!-- TAB: OVERVIEW -->
+      <div id="atab-overview">
+        <div style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--text-main);margin-bottom:6px;">Platform Overview</div>
+        <div style="font-size:14px;color:var(--text-muted);margin-bottom:28px;">Saturday, March 28, 2026 · All systems operational <span style="color:var(--g1);">●</span></div>
+
+        <!-- Admin KPIs -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px;" class="admin-kpi-grid">
+          <div class="a-kpi"><div class="a-kpi-icon" style="background:linear-gradient(135deg,#00b14f,#00d164);">🏪</div><div class="a-kpi-num">340</div><div class="a-kpi-lab">Partner Stores</div><div class="a-kpi-d a-up">+12 this month</div></div>
+          <div class="a-kpi"><div class="a-kpi-icon" style="background:linear-gradient(135deg,#ff6b35,#ff9a00);">🛍️</div><div class="a-kpi-num">14,820</div><div class="a-kpi-lab">Bags Claimed (MTD)</div><div class="a-kpi-d a-up">+2,140 vs last mo</div></div>
+          <div class="a-kpi"><div class="a-kpi-icon" style="background:linear-gradient(135deg,#4a9eff,#0066ff);">👥</div><div class="a-kpi-num">38,412</div><div class="a-kpi-lab">Registered Users</div><div class="a-kpi-d a-up">+1,204 this week</div></div>
+          <div class="a-kpi"><div class="a-kpi-icon" style="background:linear-gradient(135deg,#9b59b6,#d98fff);">💸</div><div class="a-kpi-num">$89,240</div><div class="a-kpi-lab">Platform Revenue (MTD)</div><div class="a-kpi-d a-up">+18% vs last mo</div></div>
+        </div>
+
+        <!-- Two-col charts -->
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:24px;" class="partner-two-col">
+          <div class="p-card">
+            <div class="p-card-head"><span>Daily Bag Claims — This Week</span></div>
+            <div style="display:flex;align-items:flex-end;gap:10px;height:160px;margin-top:20px;padding-bottom:8px;">
+              <div class="bar-col"><div class="bar-fill" style="height:48%;background:var(--g2);"></div><div class="bar-day">Mon</div><div class="bar-val">412</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:63%;background:var(--g1);"></div><div class="bar-day">Tue</div><div class="bar-val">540</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:55%;background:var(--g2);"></div><div class="bar-day">Wed</div><div class="bar-day">470</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:82%;background:var(--g1);"></div><div class="bar-day">Thu</div><div class="bar-val">702</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:100%;background:#00d164;"></div><div class="bar-day">Fri</div><div class="bar-val">860</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:91%;background:var(--g1);"></div><div class="bar-day">Sat</div><div class="bar-val">780</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:38%;background:var(--g2);opacity:0.5;border:2px dashed var(--g1);"></div><div class="bar-day">Sun</div><div class="bar-val">—</div></div>
+            </div>
+          </div>
+          <div class="p-card">
+            <div class="p-card-head"><span>Claims by Category</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+              <div class="p-analytics-row"><div class="p-analytics-name">🥖 Bakery</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:82%"></div></div><div class="p-analytics-val">34%</div></div>
+              <div class="p-analytics-row"><div class="p-analytics-name">🛒 Grocery</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:65%;background:#4a9eff;"></div></div><div class="p-analytics-val">27%</div></div>
+              <div class="p-analytics-row"><div class="p-analytics-name">🍕 Restaurant</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:50%;background:#ff6b35;"></div></div><div class="p-analytics-val">21%</div></div>
+              <div class="p-analytics-row"><div class="p-analytics-name">🍣 Sushi</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:30%;background:#9b59b6;"></div></div><div class="p-analytics-val">12%</div></div>
+              <div class="p-analytics-row"><div class="p-analytics-name">🥦 Produce</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:15%;background:#e67e22;"></div></div><div class="p-analytics-val">6%</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="p-card">
+          <div class="p-card-head"><span>Recent Platform Activity</span><span class="p-card-badge">Live</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+            <div class="a-activity"><div class="a-act-icon" style="background:#e6f7ed;">🏪</div><div><b>New Partner:</b> Jersey Mike's Subs joined the platform</div><div class="a-act-time">4 min ago</div></div>
+            <div class="a-activity"><div class="a-act-icon" style="background:#fff3e6;">🛍️</div><div><b>Milestone:</b> 14,820 bags claimed this month — a new record!</div><div class="a-act-time">12 min ago</div></div>
+            <div class="a-activity"><div class="a-act-icon" style="background:#e8f4ff;">👤</div><div><b>New User:</b> 38,412 total users — 1,204 this week</div><div class="a-act-time">1 hr ago</div></div>
+            <div class="a-activity"><div class="a-act-icon" style="background:#fde8f4;">⚠️</div><div><b>Alert:</b> Pizza Hut listing expires in 45 min with 6 bags remaining</div><div class="a-act-time">2 hr ago</div></div>
+            <div class="a-activity"><div class="a-act-icon" style="background:#e6f7ed;">✅</div><div><b>Verified:</b> Sprouts Farmers Market profile approved</div><div class="a-act-time">3 hr ago</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: STORES -->
+      <div id="atab-stores" style="display:none;">
+        <div style="font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:6px;">Manage Partner Stores</div>
+        <div style="font-size:14px;color:var(--text-muted);margin-bottom:24px;">340 total partners · 47 active today</div>
+        <div class="p-card" style="overflow-x:auto;">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+            <input type="text" placeholder="🔍  Search stores…" class="p-input" style="max-width:260px;" />
+          </div>
+          <table class="p-table">
+            <thead><tr><th>Store</th><th>Category</th><th>Location</th><th>Rating</th><th>Listings</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><b>Panera Bread</b></td><td>Bakery</td><td>Fayetteville, NC</td><td>⭐ 4.7</td><td>2 active</td><td><span class="p-status green">Active</span></td><td><button class="a-action-btn">Edit</button></td></tr>
+              <tr><td><b>Whole Foods Market</b></td><td>Grocery</td><td>Fayetteville, NC</td><td>⭐ 4.5</td><td>2 active</td><td><span class="p-status green">Active</span></td><td><button class="a-action-btn">Edit</button></td></tr>
+              <tr><td><b>Pizza Hut</b></td><td>Restaurant</td><td>Fayetteville, NC</td><td>⭐ 4.2</td><td>2 active</td><td><span class="p-status orange">Closing Soon</span></td><td><button class="a-action-btn">Edit</button></td></tr>
+              <tr><td><b>H Mart</b></td><td>Sushi / Korean</td><td>Fayetteville, NC</td><td>⭐ 4.8</td><td>2 active</td><td><span class="p-status green">Active</span></td><td><button class="a-action-btn">Edit</button></td></tr>
+              <tr><td><b>Nothing Bundt Cakes</b></td><td>Dessert</td><td>Fayetteville, NC</td><td>⭐ 4.9</td><td>2 active</td><td><span class="p-status green">Active</span></td><td><button class="a-action-btn">Edit</button></td></tr>
+              <tr><td><b>Sprouts Farmers Market</b></td><td>Produce</td><td>Fayetteville, NC</td><td>⭐ 4.6</td><td>2 active</td><td><span class="p-status green">Active</span></td><td><button class="a-action-btn">Edit</button></td></tr>
+              <tr><td><b>Jersey Mike's Subs</b></td><td>Deli</td><td>Fayetteville, NC</td><td>—</td><td>0</td><td><span class="p-status blue">Pending Review</span></td><td><button class="a-action-btn" style="background:#e6f7ed;color:var(--g3);">Approve</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB: LISTINGS -->
+      <div id="atab-listings" style="display:none;">
+        <div style="font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:24px;">All Active Listings</div>
+        <div id="adminListingsFull" style="display:flex;flex-direction:column;gap:14px;"></div>
+      </div>
+
+      <!-- TAB: USERS -->
+      <div id="atab-users" style="display:none;">
+        <div style="font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:6px;">Users</div>
+        <div style="font-size:14px;color:var(--text-muted);margin-bottom:24px;">38,412 registered · 2,841 active today</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:24px;" class="admin-kpi-grid">
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#e6f7ed;">👤</div><div class="a-kpi-num">38,412</div><div class="a-kpi-lab">Total Users</div></div>
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#fff3e6;">🔄</div><div class="a-kpi-num">78%</div><div class="a-kpi-lab">Repeat Users</div></div>
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#e8f4ff;">📍</div><div class="a-kpi-num">12</div><div class="a-kpi-lab">Active Cities</div></div>
+        </div>
+        <div class="p-card" style="overflow-x:auto;">
+          <table class="p-table">
+            <thead><tr><th>User</th><th>Location</th><th>Bags Claimed</th><th>Total Saved</th><th>Joined</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><b>M. Johnson</b></td><td>Fayetteville, NC</td><td>24</td><td>$142.40</td><td>Jan 2026</td><td><span class="p-status green">Active</span></td></tr>
+              <tr><td><b>R. Thompson</b></td><td>Fayetteville, NC</td><td>18</td><td>$96.80</td><td>Feb 2026</td><td><span class="p-status green">Active</span></td></tr>
+              <tr><td><b>A. Williams</b></td><td>Fayetteville, NC</td><td>31</td><td>$189.20</td><td>Dec 2025</td><td><span class="p-status green">Active</span></td></tr>
+              <tr><td><b>K. Davis</b></td><td>Fayetteville, NC</td><td>7</td><td>$39.90</td><td>Mar 2026</td><td><span class="p-status orange">New</span></td></tr>
+              <tr><td><b>T. Brown</b></td><td>Fayetteville, NC</td><td>52</td><td>$312.00</td><td>Oct 2025</td><td><span class="p-status green">Active</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB: IMPACT -->
+      <div id="atab-impact" style="display:none;">
+        <div style="font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:24px;">🌍 Impact Report</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:24px;" class="partner-two-col">
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#e6f7ed;">♻️</div><div class="a-kpi-num">2.4M lbs</div><div class="a-kpi-lab">Food Rescued (All-Time)</div><div class="a-kpi-d a-up">+186K lbs this month</div></div>
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#e8f4ff;">🌱</div><div class="a-kpi-num">1,920 T</div><div class="a-kpi-lab">CO₂ Emissions Avoided</div><div class="a-kpi-d a-up">Equivalent to 420 cars/yr</div></div>
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#fff3e6;">💸</div><div class="a-kpi-num">$8.2M</div><div class="a-kpi-lab">Total Shopper Savings</div><div class="a-kpi-d a-up">Avg. $213 per user</div></div>
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#fde8f4;">🏙️</div><div class="a-kpi-num">12</div><div class="a-kpi-lab">Cities Served</div><div class="a-kpi-d a-up">+3 launching next quarter</div></div>
+        </div>
+        <div class="p-card">
+          <div class="p-card-head"><span>Monthly Food Rescued (lbs)</span></div>
+          <div style="display:flex;align-items:flex-end;gap:14px;height:180px;margin-top:24px;padding-bottom:8px;">
+            <div class="bar-col"><div class="bar-fill" style="height:50%;background:var(--g2);"></div><div class="bar-day">Oct</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:58%;background:var(--g1);"></div><div class="bar-day">Nov</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:65%;background:var(--g2);"></div><div class="bar-day">Dec</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:72%;background:var(--g1);"></div><div class="bar-day">Jan</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:80%;background:var(--g2);"></div><div class="bar-day">Feb</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:100%;background:#00d164;"></div><div class="bar-day">Mar</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: REVENUE -->
+      <div id="atab-revenue" style="display:none;">
+        <div style="font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:24px;">💰 Revenue</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:24px;" class="admin-kpi-grid">
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#e6f7ed;">📅</div><div class="a-kpi-num">$89,240</div><div class="a-kpi-lab">This Month</div><div class="a-kpi-d a-up">+18% vs last</div></div>
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#fff3e6;">📈</div><div class="a-kpi-num">$482,000</div><div class="a-kpi-lab">Year to Date</div><div class="a-kpi-d a-up">+34% vs last year</div></div>
+          <div class="a-kpi" style="background:#fff;"><div class="a-kpi-icon" style="background:#fde8f4;">🏦</div><div class="a-kpi-num">15%</div><div class="a-kpi-lab">Platform Take Rate</div><div class="a-kpi-d p-neutral">→ Unchanged</div></div>
+        </div>
+        <div class="p-card">
+          <div class="p-card-head"><span>Top Revenue Partners</span></div>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">
+            <div class="p-analytics-row"><div class="p-analytics-name">🥖 Panera Bread</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:90%"></div></div><div class="p-analytics-val">$18,420/mo</div></div>
+            <div class="p-analytics-row"><div class="p-analytics-name">🛒 Whole Foods</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:74%;background:#4a9eff;"></div></div><div class="p-analytics-val">$15,200/mo</div></div>
+            <div class="p-analytics-row"><div class="p-analytics-name">🍕 Pizza Hut</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:55%;background:#ff6b35;"></div></div><div class="p-analytics-val">$11,340/mo</div></div>
+            <div class="p-analytics-row"><div class="p-analytics-name">🍣 H Mart</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:42%;background:#9b59b6;"></div></div><div class="p-analytics-val">$8,640/mo</div></div>
+            <div class="p-analytics-row"><div class="p-analytics-name">🧁 Nothing Bundt Cakes</div><div class="p-analytics-bar-wrap"><div class="p-analytics-bar" style="width:34%;background:#e67e22;"></div></div><div class="p-analytics-val">$7,020/mo</div></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════ ADD LISTING MODAL ══════════════ -->
+<div class="modal-overlay" id="addListingOverlay" onclick="closeAddOnOverlay(event)">
+  <div class="modal" style="max-width:500px;">
+    <button class="modal-close" onclick="closeAddListing()" style="position:absolute;top:16px;right:16px;z-index:10;">✕</button>
+    <div style="padding:32px 28px 28px;">
+      <div style="font-family:var(--font-display);font-size:22px;font-weight:800;margin-bottom:20px;">➕ Add New Listing</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="p-field"><label>Item Name</label><input type="text" placeholder="e.g. Bread Surprise Bag" class="p-input" id="newItemName"/></div>
+        <div class="p-field"><label>Description / Qty</label><input type="text" placeholder="e.g. ~4 assorted bread items" class="p-input" id="newItemQty"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="p-field"><label>Sale Price ($)</label><input type="number" placeholder="5.99" class="p-input" id="newItemPrice"/></div>
+          <div class="p-field"><label>Original Price ($)</label><input type="number" placeholder="14.99" class="p-input" id="newItemOrig"/></div>
+        </div>
+        <div class="p-field"><label>Pickup Window</label><input type="text" placeholder="e.g. 3:00 PM – 5:00 PM" class="p-input" id="newItemWindow"/></div>
+        <div class="p-field"><label>Quantity Available</label><input type="number" placeholder="10" class="p-input" id="newItemQtyNum"/></div>
+        <button onclick="submitNewListing()" style="background:var(--g1);color:#fff;font-family:var(--font-display);font-weight:700;font-size:16px;padding:15px;border-radius:12px;border:none;cursor:pointer;margin-top:8px;">Publish Listing</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ MODAL ══════════════ -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
   <div class="modal" id="modal">
@@ -1234,7 +1793,150 @@ function handleSearch() {
   }
 }
 
-// ── SCROLL ────────────────────────────────────────────────
+// ── PAGE SWITCHING ────────────────────────────────────────
+function showPage(page) {
+  document.getElementById('page-main').style.display = page === 'main' ? 'block' : 'none';
+  document.getElementById('page-partner').style.display = page === 'partner' ? 'block' : 'none';
+  document.getElementById('page-admin').style.display = page === 'admin' ? 'block' : 'none';
+  window.scrollTo(0,0);
+  if (page === 'partner') renderPartnerListings();
+  if (page === 'admin') renderAdminListings();
+}
+
+// ── PARTNER LISTINGS DATA ─────────────────────────────────
+let partnerListings = [
+  {emoji:'🥖', name:'Bread Surprise Bag', meta:'~4 items · Pickup 3–5 PM · 8 remaining', now:'$5.99', was:'$14.99', status:'Active'},
+  {emoji:'🥐', name:'Pastry Bundle', meta:'~6 pastries · Pickup 3–5 PM · 4 remaining', now:'$7.99', was:'$19.99', status:'Active'},
+];
+
+function renderPartnerListings() {
+  const preview = document.getElementById('partnerListingsPreview');
+  const full = document.getElementById('partnerListingsFull');
+  const html = partnerListings.map((l,i) => `
+    <div class="p-listing-row">
+      <div class="p-listing-emoji">${l.emoji}</div>
+      <div class="p-listing-info">
+        <div class="p-listing-name">${l.name}</div>
+        <div class="p-listing-meta">${l.meta}</div>
+      </div>
+      <div class="p-listing-prices">
+        <div class="p-listing-now">${l.now}</div>
+        <div class="p-listing-was">${l.was}</div>
+      </div>
+      <div class="p-listing-actions">
+        <span class="p-status ${l.status==='Active'?'green':'orange'}">${l.status}</span>
+        <button class="p-btn-sm" onclick="toggleListingStatus(${i})">Pause</button>
+        <button class="p-btn-sm danger" onclick="removeListing(${i})">Remove</button>
+      </div>
+    </div>
+  `).join('');
+  if (preview) preview.innerHTML = html;
+  if (full) full.innerHTML = html;
+}
+
+function toggleListingStatus(i) {
+  partnerListings[i].status = partnerListings[i].status === 'Active' ? 'Paused' : 'Active';
+  renderPartnerListings();
+  showToast(`Listing ${partnerListings[i].status === 'Active' ? 'activated' : 'paused'}: ${partnerListings[i].name}`);
+}
+
+function removeListing(i) {
+  const name = partnerListings[i].name;
+  partnerListings.splice(i, 1);
+  renderPartnerListings();
+  showToast(`Removed listing: ${name}`);
+}
+
+// ── PARTNER TAB SWITCHING ─────────────────────────────────
+function switchPartnerTab(el, tab) {
+  document.querySelectorAll('.p-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  ['overview','listings','orders','analytics','settings'].forEach(t => {
+    const el = document.getElementById('ptab-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  if (tab === 'listings') renderPartnerListings();
+}
+
+// ── ADD LISTING MODAL ─────────────────────────────────────
+function openAddListing() {
+  document.getElementById('addListingOverlay').classList.add('open');
+}
+function closeAddListing() {
+  document.getElementById('addListingOverlay').classList.remove('open');
+}
+function closeAddOnOverlay(e) {
+  if (e.target === document.getElementById('addListingOverlay')) closeAddListing();
+}
+function submitNewListing() {
+  const name = document.getElementById('newItemName').value.trim();
+  const qty  = document.getElementById('newItemQty').value.trim();
+  const price = document.getElementById('newItemPrice').value;
+  const orig  = document.getElementById('newItemOrig').value;
+  const window_ = document.getElementById('newItemWindow').value.trim();
+  const qtyNum  = document.getElementById('newItemQtyNum').value;
+  if (!name || !price) { showToast('Please fill in item name and price.'); return; }
+  partnerListings.push({
+    emoji: '🍱', name, status: 'Active',
+    meta: `${qty || 'Assorted'} · Pickup ${window_ || 'TBD'} · ${qtyNum || '10'} remaining`,
+    now: `$${parseFloat(price).toFixed(2)}`,
+    was: orig ? `$${parseFloat(orig).toFixed(2)}` : '—'
+  });
+  closeAddListing();
+  renderPartnerListings();
+  showToast(`✅ Listing published: ${name}`);
+  ['newItemName','newItemQty','newItemPrice','newItemOrig','newItemWindow','newItemQtyNum'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+// ── ADMIN LISTINGS ────────────────────────────────────────
+function renderAdminListings() {
+  const el = document.getElementById('adminListingsFull');
+  if (!el) return;
+  const all = [
+    {emoji:'🥖',name:'Panera – Bread Surprise Bag',meta:'Pickup 3–5 PM · 8 remaining · Fayetteville',now:'$5.99',was:'$14.99',status:'Active'},
+    {emoji:'🥐',name:'Panera – Pastry Bundle',meta:'Pickup 3–5 PM · 4 remaining · Fayetteville',now:'$7.99',was:'$19.99',status:'Active'},
+    {emoji:'🛒',name:'Whole Foods – Prepared Foods Box',meta:'Pickup 4–6 PM · 6 remaining · Fayetteville',now:'$9.99',was:'$22.00',status:'Active'},
+    {emoji:'🥩',name:'Whole Foods – Meat Markdown Bundle',meta:'Pickup 4–6 PM · 3 remaining · Fayetteville',now:'$12.99',was:'$28.99',status:'Active'},
+    {emoji:'🍕',name:'Pizza Hut – End-of-Day Pizza Box',meta:'Pickup 8:30–9:30 PM · 5 remaining · Fayetteville',now:'$4.99',was:'$16.99',status:'Closing Soon'},
+    {emoji:'🍣',name:'H Mart – Sushi Surplus Box',meta:'Pickup 6–7:30 PM · 10 remaining · Fayetteville',now:'$8.99',was:'$18.99',status:'Active'},
+    {emoji:'🧁',name:'Nothing Bundt Cakes – Bundtlet Bag',meta:'Pickup 5:30–7 PM · 7 remaining · Fayetteville',now:'$6.49',was:'$18.00',status:'Active'},
+    {emoji:'🥦',name:'Sprouts – Artisan Bread Bag',meta:'Pickup 3:30–5:30 PM · 12 remaining · Fayetteville',now:'$3.49',was:'$6.49',status:'Active'},
+    ...partnerListings.map(l => ({...l, name:'Panera – ' + l.name}))
+  ];
+  el.innerHTML = all.map(l => `
+    <div class="p-listing-row">
+      <div class="p-listing-emoji">${l.emoji}</div>
+      <div class="p-listing-info">
+        <div class="p-listing-name">${l.name}</div>
+        <div class="p-listing-meta">${l.meta}</div>
+      </div>
+      <div class="p-listing-prices">
+        <div class="p-listing-now">${l.now}</div>
+        <div class="p-listing-was">${l.was}</div>
+      </div>
+      <div class="p-listing-actions">
+        <span class="p-status ${l.status==='Active'?'green':l.status==='Closing Soon'?'orange':'blue'}">${l.status}</span>
+        <button class="a-action-btn" onclick="showToast('Listing edited in admin panel')">Edit</button>
+        <button class="a-action-btn" style="color:#e74c3c;" onclick="showToast('Listing removed by admin')">Remove</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── ADMIN TAB SWITCHING ───────────────────────────────────
+function switchAdminTab(el, tab) {
+  document.querySelectorAll('.a-nav-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  ['overview','stores','listings','users','impact','revenue'].forEach(t => {
+    const el = document.getElementById('atab-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  if (tab === 'listings') renderAdminListings();
+}
+
+
 function scrollTo(sel) {
   document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' });
 }
