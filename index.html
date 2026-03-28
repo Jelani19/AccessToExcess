@@ -5,228 +5,174 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AccessToExcess</title>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
 <style>
-:root {
-    --green: #16a34a;
-    --bg: #f6f7f9;
-    --card: #ffffff;
-    --text: #111827;
-    --muted: #6b7280;
-}
+body { font-family: Arial; margin:0; background:#f5f7f9; }
+.header { background:#16a34a; color:white; padding:15px; text-align:center; }
 
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
-    background: var(--bg);
-}
+.container { padding:15px; }
+.card { background:white; padding:15px; border-radius:12px; margin-bottom:12px; box-shadow:0 3px 8px rgba(0,0,0,0.08); }
 
-/* Top Bar */
-.header {
-    position: sticky;
-    top: 0;
-    background: white;
-    padding: 12px 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    z-index: 10;
-}
+button { background:#16a34a; color:white; border:none; padding:10px; border-radius:8px; width:100%; margin-top:8px; }
 
-.header-title {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--green);
-}
+input { width:100%; padding:10px; margin-top:8px; border-radius:8px; border:1px solid #ddd; }
 
-/* Search */
-.search {
-    margin-top: 8px;
-}
-
-.search input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-    background: #f9fafb;
-}
-
-/* Categories (like DoorDash chips) */
-.categories {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 10px 16px;
-}
-
-.chip {
-    background: white;
-    padding: 8px 12px;
-    border-radius: 20px;
-    border: 1px solid #e5e7eb;
-    white-space: nowrap;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-/* Feed */
-.feed {
-    padding: 10px 16px 80px;
-}
-
-/* Store Cards */
-.store-card {
-    background: var(--card);
-    border-radius: 16px;
-    margin-bottom: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-}
-
-.store-image {
-    height: 120px;
-    background: linear-gradient(135deg, #16a34a, #22c55e);
-}
-
-.store-content {
-    padding: 12px;
-}
-
-.store-title {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.store-meta {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 4px;
-}
-
-.badge {
-    display: inline-block;
-    background: #dcfce7;
-    color: var(--green);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    margin-top: 6px;
-}
-
-/* Bottom Nav */
-.navbar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: white;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
-}
-
-.nav-item {
-    text-align: center;
-    font-size: 12px;
-    color: var(--muted);
-}
-
-.nav-item.active {
-    color: var(--green);
-    font-weight: bold;
-}
+.hidden { display:none; }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-    <div class="header-title">AccessToExcess</div>
-    <div class="search">
-        <input id="search" placeholder="Search for food..." oninput="renderStores()">
+<div class="header">AccessToExcess</div>
+
+<div class="container">
+
+<!-- AUTH -->
+<div id="auth">
+    <div class="card">
+        <h3>Login / Signup</h3>
+        <input id="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Password">
+        <button onclick="signup()">Sign Up</button>
+        <button onclick="login()">Login</button>
     </div>
 </div>
 
-<!-- Categories -->
-<div class="categories">
-    <div class="chip" onclick="filterCategory('all')">All</div>
-    <div class="chip" onclick="filterCategory('bakery')">Bakery</div>
-    <div class="chip" onclick="filterCategory('deli')">Deli</div>
-    <div class="chip" onclick="filterCategory('produce')">Produce</div>
+<!-- APP -->
+<div id="app" class="hidden">
+
+    <div class="card">
+        <h3>Location</h3>
+        <p id="locationText">Detecting...</p>
+    </div>
+
+    <div class="card">
+        <h3>Stores Nearby</h3>
+        <div id="stores"></div>
+    </div>
+
+    <div class="card">
+        <h3>Cart</h3>
+        <div id="cart"></div>
+        <button onclick="checkout()">Checkout</button>
+    </div>
+
+    <button onclick="logout()">Logout</button>
 </div>
 
-<!-- Feed -->
-<div class="feed" id="feed"></div>
-
-<!-- Bottom Nav -->
-<div class="navbar">
-    <div class="nav-item active">Home</div>
-    <div class="nav-item">Orders</div>
-    <div class="nav-item">Account</div>
 </div>
 
 <script>
-const stores = [
-    {
-        name: "Walmart",
-        distance: "2.1 mi",
-        category: "deli",
-        items: ["Bakery Bread", "Deli Meal"]
-    },
-    {
-        name: "Target",
-        distance: "3.4 mi",
-        category: "produce",
-        items: ["Salad Bowl", "Fruit Pack"]
-    },
-    {
-        name: "Local Market",
-        distance: "1.8 mi",
-        category: "bakery",
-        items: ["Fresh Bread", "Pastries"]
+// 🔥 Firebase Config (REPLACE THIS)
+const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "YOUR_DOMAIN",
+    projectId: "YOUR_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let cart = [];
+let userLocation = null;
+
+/* AUTH */
+function signup() {
+    auth.createUserWithEmailAndPassword(
+        email.value, password.value
+    );
+}
+
+function login() {
+    auth.signInWithEmailAndPassword(
+        email.value, password.value
+    );
+}
+
+function logout() {
+    auth.signOut();
+}
+
+/* AUTH STATE */
+auth.onAuthStateChanged(user => {
+    if (user) {
+        document.getElementById("auth").classList.add("hidden");
+        document.getElementById("app").classList.remove("hidden");
+        initLocation();
+        loadStores();
+    } else {
+        document.getElementById("auth").classList.remove("hidden");
+        document.getElementById("app").classList.add("hidden");
     }
+});
+
+/* GPS LOCATION */
+function initLocation() {
+    navigator.geolocation.getCurrentPosition(pos => {
+        userLocation = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude
+        };
+        document.getElementById("locationText").innerText =
+            `${userLocation.lat.toFixed(4)}, ${userLocation.lon.toFixed(4)}`;
+    });
+}
+
+/* LOAD STORES (STATIC FOR NOW) */
+const stores = [
+    { name: "Walmart", items: ["Bread", "Meal"] },
+    { name: "Target", items: ["Salad", "Fruit"] }
 ];
 
-let currentCategory = "all";
+function loadStores() {
+    const div = document.getElementById("stores");
+    div.innerHTML = "";
 
-/* Category filter */
-function filterCategory(cat) {
-    currentCategory = cat;
-    renderStores();
+    stores.forEach(store => {
+        const el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = `
+            <h4>${store.name}</h4>
+            <button onclick="addToCart('${store.name}','${store.items[0]}')">
+                Add Item
+            </button>
+        `;
+        div.appendChild(el);
+    });
 }
 
-/* Render feed */
-function renderStores() {
-    const feed = document.getElementById("feed");
-    const search = document.getElementById("search").value.toLowerCase();
-
-    feed.innerHTML = "";
-
-    stores
-        .filter(store => {
-            const matchCategory = currentCategory === "all" || store.category === currentCategory;
-            const matchSearch =
-                store.name.toLowerCase().includes(search) ||
-                store.items.some(i => i.toLowerCase().includes(search));
-
-            return matchCategory && matchSearch;
-        })
-        .forEach(store => {
-            const card = document.createElement("div");
-            card.className = "store-card";
-
-            card.innerHTML = `
-                <div class="store-image"></div>
-                <div class="store-content">
-                    <div class="store-title">${store.name}</div>
-                    <div class="store-meta">${store.distance} • ${store.category}</div>
-                    <div class="badge">${store.items.join(", ")}</div>
-                </div>
-            `;
-
-            feed.appendChild(card);
-        });
+/* CART */
+function addToCart(store, item) {
+    cart.push({ store, item });
+    renderCart();
 }
 
-renderStores();
+function renderCart() {
+    const div = document.getElementById("cart");
+    div.innerHTML = cart.map(c => `${c.store} - ${c.item}`).join("<br>");
+}
+
+/* CHECKOUT */
+function checkout() {
+    if (cart.length === 0) return alert("Cart empty");
+
+    const order = {
+        items: cart,
+        created: new Date(),
+        user: auth.currentUser.email
+    };
+
+    db.collection("orders").add(order);
+
+    alert("Order placed!");
+    cart = [];
+    renderCart();
+}
 </script>
 
 </body>
