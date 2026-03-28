@@ -3,294 +3,385 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AccessToExcess</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
+<title>AccessToExcess — A2E</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-body {
-    font-family: Arial;
-    margin:0;
-    background:#f5f7f9;
-}
+  :root {
+    --green: #1a7a4a;
+    --green-light: #23a865;
+    --green-pale: #e8f7ef;
+    --green-dark: #0f4a2c;
+    --accent: #f5c842;
+    --white: #ffffff;
+    --gray-50: #f8fafb;
+    --gray-100: #f0f4f2;
+    --gray-200: #dce8e2;
+    --gray-400: #8fa89c;
+    --gray-600: #4a6358;
+    --gray-800: #1c2e26;
+    --radius: 14px;
+    --shadow: 0 2px 16px rgba(26,122,74,0.10);
+    --shadow-lg: 0 8px 40px rgba(26,122,74,0.16);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--gray-800); min-height: 100vh; }
 
-/* Header */
-.header {
-    background:#16a34a;
-    color:white;
-    padding:15px;
-    text-align:center;
-    font-size:20px;
-}
+  nav { background: var(--white); border-bottom: 1.5px solid var(--gray-200); position: sticky; top: 0; z-index: 100; padding: 0 5%; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 24px; height: 68px; }
+  .logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--green); letter-spacing: -0.5px; text-decoration: none; white-space: nowrap; }
+  .logo span { color: var(--green-light); }
+  .location-pill { display: flex; align-items: center; gap: 7px; background: var(--gray-100); border-radius: 30px; padding: 8px 16px; cursor: pointer; font-size: 0.88rem; font-weight: 500; color: var(--gray-800); border: 1.5px solid var(--gray-200); transition: border-color .2s; }
+  .location-pill:hover { border-color: var(--green-light); }
+  .location-pill svg { color: var(--green); flex-shrink: 0; }
+  .nav-search { flex: 1; max-width: 380px; display: flex; align-items: center; background: var(--gray-100); border-radius: 30px; padding: 9px 18px; gap: 9px; border: 1.5px solid var(--gray-200); transition: border-color .2s, box-shadow .2s; }
+  .nav-search:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,122,74,.12); }
+  .nav-search input { border: none; background: transparent; outline: none; font-family: inherit; font-size: 0.9rem; color: var(--gray-800); width: 100%; }
+  .nav-search svg { color: var(--gray-400); flex-shrink: 0; }
+  .nav-links { display: flex; gap: 8px; margin-left: auto; }
+  .btn-ghost { background: none; border: none; padding: 9px 18px; font-family: inherit; font-size: 0.88rem; font-weight: 600; color: var(--gray-600); border-radius: 30px; cursor: pointer; transition: background .2s, color .2s; }
+  .btn-ghost:hover { background: var(--gray-100); color: var(--green); }
+  .btn-solid { background: var(--green); color: var(--white); border: none; padding: 9px 22px; border-radius: 30px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background .2s, transform .1s; }
+  .btn-solid:hover { background: var(--green-light); transform: translateY(-1px); }
 
-/* Layout */
-.container { padding:15px; }
+  .hero { background: linear-gradient(120deg, var(--green-dark) 0%, var(--green) 55%, var(--green-light) 100%); padding: 52px 5% 44px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 420px; height: 420px; background: radial-gradient(circle, rgba(245,200,66,.18) 0%, transparent 70%); pointer-events: none; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; color: var(--white); line-height: 1.12; letter-spacing: -1px; max-width: 600px; margin-bottom: 10px; }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+  .hero p { color: rgba(255,255,255,.78); font-size: 1.05rem; margin-bottom: 28px; max-width: 480px; }
+  .hero-search { display: flex; gap: 12px; max-width: 520px; }
+  .hero-search input { flex: 1; padding: 14px 20px; border-radius: 30px; border: none; font-family: inherit; font-size: 0.95rem; outline: none; box-shadow: 0 2px 12px rgba(0,0,0,.15); }
+  .hero-search .btn-accent { background: var(--accent); color: var(--gray-800); border: none; padding: 14px 28px; border-radius: 30px; font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: transform .15s, box-shadow .15s; }
+  .hero-search .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(245,200,66,.4); }
+  .hero-tags { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .hero-tag { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9); border-radius: 20px; padding: 5px 14px; font-size: 0.82rem; font-weight: 500; backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.2); cursor: pointer; transition: background .2s; }
+  .hero-tag:hover { background: rgba(255,255,255,.25); }
 
-/* Store Cards (DoorDash style) */
-.store-card {
-    background:white;
-    border-radius:12px;
-    overflow:hidden;
-    margin-bottom:15px;
-    box-shadow:0 3px 8px rgba(0,0,0,0.08);
-}
+  .main { max-width: 1200px; margin: 0 auto; padding: 36px 5%; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 18px; color: var(--gray-800); }
+  .categories { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+  .cat-pill { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 30px; padding: 10px 20px; font-size: 0.88rem; font-weight: 600; color: var(--gray-600); cursor: pointer; transition: all .2s; text-decoration: none; }
+  .cat-pill:hover, .cat-pill.active { border-color: var(--green); background: var(--green-pale); color: var(--green); }
+  .cat-pill .icon { font-size: 1.1rem; }
 
-.store-card img {
-    width:100%;
-    height:140px;
-    object-fit:cover;
-}
+  .promos { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 40px; }
+  .promo-card { border-radius: var(--radius); padding: 24px 28px; position: relative; overflow: hidden; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+  .promo-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .promo-card.green { background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); color: var(--white); }
+  .promo-card.gold { background: linear-gradient(135deg, #1c2e26 0%, #2d5a3d 100%); color: var(--white); }
+  .promo-card h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+  .promo-card p { font-size: 0.85rem; opacity: .82; margin-bottom: 14px; }
+  .promo-cta { display: inline-block; background: var(--white); color: var(--green); border-radius: 20px; padding: 7px 18px; font-size: 0.82rem; font-weight: 700; text-decoration: none; transition: transform .15s; }
+  .promo-card.gold .promo-cta { color: var(--gray-800); }
+  .promo-cta:hover { transform: scale(1.04); }
+  .promo-emoji { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 3.5rem; opacity: .25; }
 
-.store-content {
-    padding:10px;
-}
+  .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 48px; }
+  .stat-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--gray-200); padding: 20px 22px; text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--green); line-height: 1; }
+  .stat-label { font-size: 0.82rem; color: var(--gray-400); margin-top: 5px; font-weight: 500; }
 
-/* Items */
-.item-card {
-    display:flex;
-    background:white;
-    border-radius:10px;
-    margin-top:10px;
-    overflow:hidden;
-    box-shadow:0 2px 6px rgba(0,0,0,0.08);
-}
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .see-all { font-size: 0.88rem; font-weight: 600; color: var(--green); text-decoration: none; cursor: pointer; }
+  .see-all:hover { text-decoration: underline; }
 
-.item-card img {
-    width:100px;
-    height:100px;
-    object-fit:cover;
-}
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 48px; }
+  .service-card { background: var(--white); border-radius: var(--radius); overflow: hidden; cursor: pointer; border: 1.5px solid var(--gray-200); transition: transform .2s, box-shadow .2s, border-color .2s; }
+  .service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--green-light); }
+  .card-img { width: 100%; height: 160px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative; }
+  .card-badge { position: absolute; top: 10px; left: 10px; background: var(--green); color: var(--white); border-radius: 8px; padding: 3px 9px; font-size: 0.73rem; font-weight: 700; }
+  .card-body { padding: 14px 16px 16px; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .card-meta { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--gray-400); margin-bottom: 10px; }
+  .card-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--gray-400); }
+  .card-rating { color: var(--green); font-weight: 600; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--gray-100); }
+  .card-time { font-size: 0.82rem; font-weight: 600; color: var(--green); }
+  .card-price { font-size: 0.82rem; color: var(--gray-400); }
+  .card-add { width: 32px; height: 32px; background: var(--green); border-radius: 50%; border: none; color: var(--white); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .15s; }
+  .card-add:hover { background: var(--green-light); transform: scale(1.1); }
 
-.item-info {
-    padding:10px;
-    flex:1;
-}
+  .map-strip { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--gray-200); overflow: hidden; margin-bottom: 48px; display: flex; min-height: 220px; }
+  .map-info { padding: 28px 32px; flex: 0 0 320px; display: flex; flex-direction: column; justify-content: center; }
+  .map-info h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+  .map-info p { font-size: 0.88rem; color: var(--gray-600); margin-bottom: 18px; line-height: 1.5; }
+  .map-visual { flex: 1; background: linear-gradient(135deg, var(--green-pale) 0%, var(--gray-100) 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .map-grid { position: absolute; inset: 0; background-image: linear-gradient(var(--green-light) 1px, transparent 1px), linear-gradient(90deg, var(--green-light) 1px, transparent 1px); background-size: 40px 40px; opacity: .08; }
+  .map-pins { position: relative; z-index: 1; display: flex; gap: 24px; align-items: flex-end; }
+  .map-pin { display: flex; flex-direction: column; align-items: center; gap: 4px; animation: float 2.8s ease-in-out infinite; }
+  .map-pin:nth-child(2) { animation-delay: .6s; }
+  .map-pin:nth-child(3) { animation-delay: 1.2s; }
+  .pin-dot { width: 16px; height: 16px; background: var(--green); border-radius: 50%; box-shadow: 0 0 0 4px rgba(26,122,74,.2); }
+  .pin-label { background: var(--green); color: var(--white); border-radius: 8px; padding: 4px 10px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-/* Buttons */
-button {
-    width:100%;
-    padding:10px;
-    margin-top:8px;
-    background:#16a34a;
-    color:white;
-    border:none;
-    border-radius:8px;
-}
+  .analysis-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 48px; }
+  .analysis-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--gray-200); padding: 28px; }
+  .analysis-card h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 18px; }
+  .bar-item { display: flex; align-items: center; gap: 12px; margin-bottom: 13px; }
+  .bar-label { font-size: 0.82rem; color: var(--gray-600); width: 120px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 9px; background: var(--gray-100); border-radius: 9px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 100%); border-radius: 9px; animation: growBar .8s ease both; }
+  @keyframes growBar { from { width: 0 !important; } }
+  .bar-val { font-size: 0.82rem; font-weight: 600; color: var(--green); width: 40px; text-align: right; }
+  .quick-actions { display: flex; flex-direction: column; gap: 12px; }
+  .qa-btn { display: flex; align-items: center; gap: 12px; background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all .2s; text-align: left; }
+  .qa-btn:hover { border-color: var(--green); background: var(--green-pale); }
+  .qa-icon { width: 38px; height: 38px; background: var(--green-pale); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+  .qa-label { font-size: 0.88rem; font-weight: 600; color: var(--gray-800); }
+  .qa-sub { font-size: 0.76rem; color: var(--gray-400); }
 
-/* Nav */
-.nav button {
-    width:auto;
-    margin-right:5px;
-}
+  footer { background: var(--gray-800); color: rgba(255,255,255,.55); padding: 40px 5% 28px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+  .footer-brand .logo { color: rgba(255,255,255,.9); display: block; margin-bottom: 10px; }
+  .footer-brand p { font-size: 0.83rem; line-height: 1.6; max-width: 240px; }
+  .footer-col h4 { font-family: 'Syne', sans-serif; color: var(--white); font-size: 0.9rem; font-weight: 700; margin-bottom: 14px; }
+  .footer-col a { display: block; font-size: 0.83rem; margin-bottom: 8px; cursor: pointer; text-decoration: none; color: rgba(255,255,255,.55); transition: color .2s; }
+  .footer-col a:hover { color: var(--green-light); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,.1); padding-top: 20px; display: flex; justify-content: space-between; font-size: 0.78rem; }
 
-/* Map */
-#map {
-    height:250px;
-    margin-top:15px;
-    border-radius:10px;
-}
+  .cart-fab { position: fixed; bottom: 28px; right: 28px; z-index: 200; background: var(--green); color: var(--white); border-radius: 30px; padding: 14px 24px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-lg); cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; transition: background .2s, transform .15s; border: none; }
+  .cart-fab:hover { background: var(--green-light); transform: scale(1.04); }
+  .cart-count { background: var(--accent); color: var(--gray-800); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; }
+
+  @media (max-width: 768px) {
+    .promos { grid-template-columns: 1fr; }
+    .stats-strip { grid-template-columns: 1fr 1fr; }
+    .analysis-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .map-strip { flex-direction: column; }
+    .map-info { flex: none; }
+    .nav-links { display: none; }
+  }
 </style>
 </head>
-
 <body>
 
-<div class="header">AccessToExcess</div>
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#">Access<span>To</span>Excess</a>
+    <div class="location-pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+      Fayetteville, NC
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="nav-search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input placeholder="Search resources, datasets, tools...">
+    </div>
+    <div class="nav-links">
+      <button class="btn-ghost">Dashboard</button>
+      <button class="btn-ghost">Analytics</button>
+      <button class="btn-ghost">Sign In</button>
+      <button class="btn-solid">Get A2E+</button>
+    </div>
+  </div>
+</nav>
 
-<div class="container">
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Access <em>everything</em> you need, instantly</h1>
+    <p>Your centralized hub for data, tools, and operational resources — delivered to your workflow.</p>
+    <div class="hero-search">
+      <input placeholder="Enter your location or project scope...">
+      <button class="btn-accent">Find Resources →</button>
+    </div>
+    <div class="hero-tags">
+      <span class="hero-tag">📡 Traceroute Data</span>
+      <span class="hero-tag">🗺️ Geo Mapping</span>
+      <span class="hero-tag">📊 Analytics</span>
+      <span class="hero-tag">⚙️ Admin Tools</span>
+      <span class="hero-tag">🔍 Hazard Analysis</span>
+    </div>
+  </div>
+</section>
 
-<div class="nav">
-    <button onclick="showView('user')">User</button>
-    <button onclick="showView('admin')">Admin</button>
-</div>
+<main class="main">
 
-<!-- USER VIEW -->
-<div id="userView">
+  <h2 class="section-title">Browse by Category</h2>
+  <div class="categories">
+    <a class="cat-pill active"><span class="icon">🏠</span> All</a>
+    <a class="cat-pill"><span class="icon">📡</span> Network Data</a>
+    <a class="cat-pill"><span class="icon">🗺️</span> Geo & Mapping</a>
+    <a class="cat-pill"><span class="icon">📈</span> Analytics</a>
+    <a class="cat-pill"><span class="icon">🔐</span> Access Control</a>
+    <a class="cat-pill"><span class="icon">⚠️</span> Hazard Reports</a>
+    <a class="cat-pill"><span class="icon">🗄️</span> Datasets</a>
+    <a class="cat-pill"><span class="icon">🛠️</span> Dev Tools</a>
+  </div>
 
-    <h3>Stores Near You</h3>
-    <div id="stores"></div>
+  <div class="promos">
+    <div class="promo-card green">
+      <span class="promo-emoji">🚀</span>
+      <h3>A2E+ Premium Access</h3>
+      <p>Unlock unlimited datasets, priority analysis, and advanced mapping tools — free for 30 days.</p>
+      <a class="promo-cta">Try A2E+ Free →</a>
+    </div>
+    <div class="promo-card gold">
+      <span class="promo-emoji">📊</span>
+      <h3>Free Data Analysis Bundle</h3>
+      <p>Upload any dataset and get automated insights, anomaly detection, and visual reports.</p>
+      <a class="promo-cta">Run Analysis →</a>
+    </div>
+  </div>
 
-    <h3>Cart</h3>
-    <div id="cart"></div>
-    <button onclick="checkout()">Checkout</button>
+  <div class="stats-strip">
+    <div class="stat-card"><div class="stat-num">2.4K</div><div class="stat-label">Active Resources</div></div>
+    <div class="stat-card"><div class="stat-num">98.7%</div><div class="stat-label">Uptime SLA</div></div>
+    <div class="stat-card"><div class="stat-num">14ms</div><div class="stat-label">Avg. Response</div></div>
+    <div class="stat-card"><div class="stat-num">847</div><div class="stat-label">Hops Analyzed</div></div>
+  </div>
 
-    <div id="map"></div>
+  <div class="section-header">
+    <h2 class="section-title" style="margin-bottom:0">Featured Resources</h2>
+    <a class="see-all">See all →</a>
+  </div>
+  <div class="cards-grid">
+    <div class="service-card">
+      <div class="card-img">🗺️<span class="card-badge">POPULAR</span></div>
+      <div class="card-body">
+        <div class="card-title">Geo Hazard Mapper</div>
+        <div class="card-meta"><span class="card-rating">★ 4.9</span><span class="dot"></span><span>Mapping · Spatial</span></div>
+        <div class="card-footer"><span class="card-time">⚡ Live</span><span class="card-price">Free tier</span><button class="card-add">+</button></div>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="card-img">📡<span class="card-badge">NEW</span></div>
+      <div class="card-body">
+        <div class="card-title">Traceroute Analyzer</div>
+        <div class="card-meta"><span class="card-rating">★ 4.8</span><span class="dot"></span><span>Network · Hops</span></div>
+        <div class="card-footer"><span class="card-time">⚡ Real-time</span><span class="card-price">A2E+</span><button class="card-add">+</button></div>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="card-img">📊</div>
+      <div class="card-body">
+        <div class="card-title">Data Pipeline Hub</div>
+        <div class="card-meta"><span class="card-rating">★ 4.7</span><span class="dot"></span><span>Analytics · ETL</span></div>
+        <div class="card-footer"><span class="card-time">🕐 24/7</span><span class="card-price">Free</span><button class="card-add">+</button></div>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="card-img">🛡️</div>
+      <div class="card-body">
+        <div class="card-title">Access Control Manager</div>
+        <div class="card-meta"><span class="card-rating">★ 4.9</span><span class="dot"></span><span>Security · RBAC</span></div>
+        <div class="card-footer"><span class="card-time">🔐 Secure</span><span class="card-price">A2E+</span><button class="card-add">+</button></div>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="card-img">⚠️</div>
+      <div class="card-body">
+        <div class="card-title">Hazard Report Engine</div>
+        <div class="card-meta"><span class="card-rating">★ 4.6</span><span class="dot"></span><span>Safety · Reports</span></div>
+        <div class="card-footer"><span class="card-time">🕐 On-demand</span><span class="card-price">Free</span><button class="card-add">+</button></div>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="card-img">🗄️<span class="card-badge">HOT</span></div>
+      <div class="card-body">
+        <div class="card-title">Dataset Marketplace</div>
+        <div class="card-meta"><span class="card-rating">★ 4.8</span><span class="dot"></span><span>Data · CSV · JSON</span></div>
+        <div class="card-footer"><span class="card-time">📦 500+ sets</span><span class="card-price">A2E+</span><button class="card-add">+</button></div>
+      </div>
+    </div>
+  </div>
 
-</div>
+  <div class="map-strip">
+    <div class="map-info">
+      <h3>🗺️ Operational Coverage Map</h3>
+      <p>Visualize your data nodes, access points, and hazard zones in real-time across your operational area.</p>
+      <button class="btn-solid" style="align-self:flex-start">Open Full Map →</button>
+    </div>
+    <div class="map-visual">
+      <div class="map-grid"></div>
+      <div class="map-pins">
+        <div class="map-pin"><div class="pin-label">Node Alpha</div><div class="pin-dot"></div></div>
+        <div class="map-pin"><div class="pin-label">Hub Central</div><div class="pin-dot"></div></div>
+        <div class="map-pin"><div class="pin-label">Zone Delta</div><div class="pin-dot"></div></div>
+      </div>
+    </div>
+  </div>
 
-<!-- ADMIN -->
-<div id="adminView" class="hidden">
+  <div class="section-header">
+    <h2 class="section-title" style="margin-bottom:0">System Overview</h2>
+  </div>
+  <div class="analysis-grid">
+    <div class="analysis-card">
+      <h3>Resource Utilization — Last 7 Days</h3>
+      <div class="bar-item"><span class="bar-label">Network Data</span><div class="bar-track"><div class="bar-fill" style="width:87%"></div></div><span class="bar-val">87%</span></div>
+      <div class="bar-item"><span class="bar-label">Geo Mapping</span><div class="bar-track"><div class="bar-fill" style="width:74%"></div></div><span class="bar-val">74%</span></div>
+      <div class="bar-item"><span class="bar-label">Analytics</span><div class="bar-track"><div class="bar-fill" style="width:91%"></div></div><span class="bar-val">91%</span></div>
+      <div class="bar-item"><span class="bar-label">Access Control</span><div class="bar-track"><div class="bar-fill" style="width:58%"></div></div><span class="bar-val">58%</span></div>
+      <div class="bar-item"><span class="bar-label">Hazard Reports</span><div class="bar-track"><div class="bar-fill" style="width:43%"></div></div><span class="bar-val">43%</span></div>
+    </div>
+    <div class="analysis-card">
+      <h3>Quick Actions</h3>
+      <div class="quick-actions">
+        <button class="qa-btn"><div class="qa-icon">📤</div><div><div class="qa-label">Upload Dataset</div><div class="qa-sub">CSV, JSON, XLSX supported</div></div></button>
+        <button class="qa-btn"><div class="qa-icon">🔍</div><div><div class="qa-label">Run Analysis</div><div class="qa-sub">Anomaly & gap detection</div></div></button>
+        <button class="qa-btn"><div class="qa-icon">🗺️</div><div><div class="qa-label">View Map</div><div class="qa-sub">Spatial data visualization</div></div></button>
+        <button class="qa-btn"><div class="qa-icon">📋</div><div><div class="qa-label">Admin Panel</div><div class="qa-sub">System configuration</div></div></button>
+      </div>
+    </div>
+  </div>
 
-    <h3>Admin Dashboard</h3>
+</main>
 
-    <input id="storeName" placeholder="Store Name">
-    <input id="storeImage" placeholder="Store Image URL">
-    <button onclick="addStore()">Add Store</button>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo">AccessToExcess</a>
+        <p>Your centralized platform for data access, operational analytics, and resource management. Built for performance, designed for clarity.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#">Dashboard</a><a href="#">Data Pipeline</a><a href="#">Geo Mapping</a><a href="#">Analytics</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="#">Documentation</a><a href="#">API Reference</a><a href="#">Status Page</a><a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About A2E</a><a href="#">Careers</a><a href="#">Contact</a><a href="#">Privacy Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AccessToExcess. All rights reserved.</span>
+      <span>Built with 💚 for operational excellence</span>
+    </div>
+  </div>
+</footer>
 
-    <h4>Orders</h4>
-    <div id="orders"></div>
-
-</div>
-
-</div>
+<button class="cart-fab">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61H19a2 2 0 001.98-1.61L23 6H6"/></svg>
+  My Resources
+  <div class="cart-count">3</div>
+</button>
 
 <script>
-/* FIREBASE */
-const firebaseConfig = {
-    apiKey: "YOUR_KEY",
-    authDomain: "YOUR_DOMAIN",
-    projectId: "YOUR_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-/* DATA */
-let cart = [];
-
-let stores = [
-    {
-        name: "Walmart",
-        image: "https://images.unsplash.com/photo-1604719312566-8912e9c1b4c5"
-    },
-    {
-        name: "Target",
-        image: "https://images.unsplash.com/photo-1580913428735-bd3c269d7b06"
-    }
-];
-
-/* NAV */
-function showView(view) {
-    document.getElementById("userView").classList.add("hidden");
-    document.getElementById("adminView").classList.add("hidden");
-
-    document.getElementById(view + "View").classList.remove("hidden");
-}
-
-/* LOAD STORES */
-function loadStores() {
-    const div = document.getElementById("stores");
-    div.innerHTML = "";
-
-    stores.forEach(store => {
-        const el = document.createElement("div");
-        el.className = "store-card";
-
-        el.innerHTML = `
-            <img src="${store.image}">
-            <div class="store-content">
-                <h4>${store.name}</h4>
-                <button onclick="openStore('${store.name}')">View Items</button>
-            </div>
-        `;
-        div.appendChild(el);
+  document.querySelectorAll('.cat-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
     });
-}
-
-/* OPEN STORE */
-function openStore(name) {
-    const div = document.getElementById("stores");
-
-    div.innerHTML = `
-        <h3>${name}</h3>
-
-        <div class="item-card">
-            <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec">
-            <div class="item-info">
-                <b>Bakery Bread</b>
-                <p>$5 → $2</p>
-                <button onclick="addToCart('Bakery Bread')">Add</button>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d">
-            <div class="item-info">
-                <b>Deli Meal</b>
-                <p>$9 → $4</p>
-                <button onclick="addToCart('Deli Meal')">Add</button>
-            </div>
-        </div>
-
-        <button onclick="loadStores()">Back</button>
-    `;
-}
-
-/* CART */
-function addToCart(item) {
-    cart.push(item);
-    renderCart();
-}
-
-function renderCart() {
-    document.getElementById("cart").innerHTML =
-        cart.map(i => `<div>${i}</div>`).join("");
-}
-
-/* CHECKOUT */
-function checkout() {
-    db.collection("orders").add({
-        items: cart,
-        created: new Date()
+  });
+  let count = 3;
+  const cartCount = document.querySelector('.cart-count');
+  document.querySelectorAll('.card-add').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      count++;
+      cartCount.textContent = count;
+      this.textContent = '✓';
+      this.style.background = 'var(--accent)';
+      this.style.color = 'var(--gray-800)';
+      setTimeout(() => { this.textContent = '+'; this.style.background = ''; this.style.color = ''; }, 1200);
     });
-
-    alert("Order placed!");
-    cart = [];
-    renderCart();
-}
-
-/* ADMIN */
-function addStore() {
-    stores.push({
-        name: storeName.value,
-        image: storeImage.value
-    });
-
-    loadStores();
-}
-
-/* LOAD ORDERS */
-function loadOrders() {
-    const div = document.getElementById("orders");
-
-    db.collection("orders").onSnapshot(snapshot => {
-        div.innerHTML = "";
-        snapshot.forEach(doc => {
-            const o = doc.data();
-            div.innerHTML += `<div class="store-card">
-                ${JSON.stringify(o.items)}
-            </div>`;
-        });
-    });
-}
-
-/* MAP */
-function initMap() {
-    navigator.geolocation.getCurrentPosition(pos => {
-        const loc = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-        };
-
-        const map = new google.maps.Map(document.getElementById("map"), {
-            center: loc,
-            zoom: 13
-        });
-
-        new google.maps.Marker({
-            position: loc,
-            map: map
-        });
-    });
-}
-
-/* INIT */
-loadStores();
-loadOrders();
-initMap();
+  });
 </script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-
 </body>
 </html>
